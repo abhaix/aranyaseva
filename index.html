@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ARANYA SEVA | Ecological Systems & Scientific Reforestation</title>
+    <meta name="description" content="Aranya Seva engineers multi-generational biological assets through rigorous scientific protocols and precision ecological architecture." />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "brand": "#01261f",
+                        "brand-light": "#1a3c34",
+                        "brand-surface": "#f8faf9",
+                        "accent": "#44ddc2",
+                        "accent-bright": "#68fade",
+                    },
+                    fontFamily: {
+                        headline: ['"Noto Serif"', 'serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                        label: ['"Space Grotesk"', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        /* Base */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            margin: 0; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Material icons */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom utilities */
+        .text-gradient {
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 60%, #2d5a4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .glass-dark {
+            background: rgba(1, 38, 31, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(68, 221, 194, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(68, 221, 194, 0); }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .animate-slide-left {
+            animation: slideInLeft 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Intersection Observer reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile menu overlay */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(1, 38, 31, 0.97);
+            backdrop-filter: blur(24px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .mobile-menu.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-menu a {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.75rem;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .mobile-menu a:hover { color: #44ddc2; }
+
+        /* Hamburger */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 110;
+            padding: 8px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #01261f;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+            background: #fff;
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+            background: #fff;
+        }
+
+        /* Pillar card hover */
+        .pillar-card img {
+            transition: filter 0.7s ease, transform 0.7s ease;
+        }
+        .pillar-card:hover img {
+            filter: grayscale(0);
+            transform: scale(1.03);
+        }
+
+        /* Tier card */
+        .tier-card {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .tier-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        }
+
+        /* CTA button */
+        .btn-primary {
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 100%);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .btn-primary:hover::after { opacity: 1; }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(1, 38, 31, 0.35);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(8px);
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Bar chart animation */
+        .bar-animated {
+            transition: height 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f8faf9; }
+        ::-webkit-scrollbar-thumb { background: #c1c8c4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #01261f; }
+    </style>
+</head>
+
+<body class="bg-brand-surface text-stone-800 font-body">
+
+    <!-- ====== HEADER / NAV ====== -->
+    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500">
+        <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
+            <!-- Logo -->
+            <a href="#" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative">
+                ARANYA SEVA
+            </a>
+
+            <!-- Desktop nav -->
+            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight">
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="#pillars">Ecosystems</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="#assessment">Laboratory</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="#tiers">Inventory</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="proposal.html">Proposals</a>
+            </div>
+
+            <!-- CTA + Hamburger -->
+            <div class="flex items-center gap-4">
+                <button class="btn-primary hidden sm:block px-7 py-2.5 rounded text-sm tracking-wide">
+                    Consultation
+                </button>
+                <div class="hamburger lg:hidden" id="hamburger-btn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </nav>
+        <div class="w-full h-px bg-stone-200/60"></div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#pillars" onclick="closeMobileMenu()">Ecosystems</a>
+        <a href="#assessment" onclick="closeMobileMenu()">Laboratory</a>
+        <a href="#tiers" onclick="closeMobileMenu()">Inventory</a>
+        <a href="proposal.html" onclick="closeMobileMenu()">Proposals</a>
+        <button class="btn-primary px-10 py-3 rounded text-base mt-4" onclick="closeMobileMenu()">Consultation</button>
+    </div>
+
+    <main>
+        <!-- ====== HERO SECTION ====== -->
+        <section class="relative min-h-screen flex items-center overflow-hidden bg-brand">
+            <!-- Background image -->
+            <div class="absolute inset-0 z-0">
+                <img class="w-full h-full object-cover opacity-50 mix-blend-overlay"
+                     alt="Dense tropical rainforest with sunbeams piercing through misty canopy"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHhQQ_k7Y9tauEkXvF0Wv7VATNNmgm2kTOeE7VUfG4t_Nd5_2TvajjJgxRigghcJYXEgbakdA02CSgPJQPFOWesfoYlqZgb47NAUnGfyGnmxXTWOeWb59lRUCBCWUrcrAQ8XQCX26vbR5sY-VW2-_BBCFDdiYtAIvdhHHS5kOvgP03zGLs72Pbz_BXX2mwOpxtw3ZPvouaxEr2ORY4wWjPOUJuMPYp_V-6ADZcyW7OvCPb1I4U6660A_9gksbvUh0B5GQzkktrbgQ" />
+                <div class="absolute inset-0 bg-gradient-to-b from-brand/80 via-brand/50 to-brand/95"></div>
+                <!-- Dot overlay -->
+                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10 max-w-6xl mx-auto w-full px-6 sm:px-10 lg:px-16 py-32 sm:py-40 flex flex-col items-center text-center">
+                <!-- Specimen label -->
+                <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 animate-fade-in">
+                    <span class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/60">Specimen ID: AS-882-X</span>
+                    <span class="w-6 sm:w-8 h-px bg-accent/40 hidden sm:block"></span>
+                    <span class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/60">12.9716° N / 77.5946° E</span>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="font-headline text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 sm:mb-10 leading-[1.05] sm:leading-[0.95] tracking-tight animate-fade-up">
+                    Transform Land into <br/>
+                    <span class="italic font-normal text-accent">Living Data</span>.
+                </h1>
+
+                <!-- Subtext -->
+                <p class="font-body text-base sm:text-lg md:text-xl text-stone-300 mb-10 sm:mb-14 max-w-2xl leading-relaxed font-light animate-fade-up delay-200">
+                    Engineering multi-generational biological assets through rigorous scientific protocols and precision ecological architecture.
+                </p>
+
+                <!-- CTAs -->
+                <div class="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
+                    <button class="btn-primary px-8 sm:px-12 py-4 sm:py-5 rounded text-base sm:text-lg">
+                        Initiate Consultation
+                    </button>
+                    <button class="btn-outline px-8 sm:px-12 py-4 sm:py-5 rounded text-base sm:text-lg">
+                        View Archive [v4.2]
+                    </button>
+                </div>
+            </div>
+
+            <!-- Floating data: left -->
+            <div class="absolute bottom-8 sm:bottom-12 left-6 sm:left-12 hidden md:block border-l border-white/20 pl-5 py-2 animate-fade-in delay-500">
+                <p class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-1">Atmospheric Saturation</p>
+                <p class="text-white font-label text-lg">88.2% <span class="text-[10px] opacity-40 ml-1">RH</span></p>
+            </div>
+            <!-- Floating data: right -->
+            <div class="absolute bottom-8 sm:bottom-12 right-6 sm:right-12 hidden md:block text-right border-r border-white/20 pr-5 py-2 animate-fade-in delay-500">
+                <p class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-1">Biomass Velocity</p>
+                <p class="text-white font-label text-lg">+14.4<span class="text-[10px] opacity-40 ml-1">m³/YR</span></p>
+            </div>
+        </section>
+
+        <!-- ====== COMPARISON SECTION ====== -->
+        <section class="py-20 sm:py-28 lg:py-40 px-6 sm:px-10 lg:px-16 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <!-- Header -->
+                <div class="reveal mb-16 sm:mb-24 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-stone-100 pb-10 sm:pb-12">
+                    <div class="max-w-xl">
+                        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-brand/40 block mb-3">Comparative Analysis [001]</span>
+                        <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-brand tracking-tight">Ecosystem Performance Indicators</h2>
+                    </div>
+                    <div class="font-label text-[10px] uppercase tracking-widest text-stone-400">
+                        Source: Aranya Seva Biological Data Systems
+                    </div>
+                </div>
+
+                <!-- Comparison grid -->
+                <div class="reveal grid grid-cols-1 md:grid-cols-2 border border-stone-200/60 divide-y md:divide-y-0 md:divide-x divide-stone-200/60">
+                    <!-- Legacy -->
+                    <div class="p-8 sm:p-12 lg:p-16 bg-stone-50/30">
+                        <div class="flex items-center gap-3 mb-10 sm:mb-16 opacity-60">
+                            <div class="w-2 h-2 rounded-full bg-stone-300"></div>
+                            <h3 class="font-label text-xs uppercase tracking-[0.3em] font-bold text-stone-500">Legacy Monoculture</h3>
+                        </div>
+                        <div class="space-y-12 sm:space-y-20">
+                            <div>
+                                <h4 class="font-headline text-xl sm:text-2xl font-semibold mb-3 text-stone-600">Nutrient Degradation</h4>
+                                <p class="font-body text-stone-500 leading-relaxed font-light text-sm sm:text-base">Linear depletion of topsoil carbon resulting in increasing dependency on synthetic inputs.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-headline text-xl sm:text-2xl font-semibold mb-3 text-stone-600">Yield Fragility</h4>
+                                <p class="font-body text-stone-500 leading-relaxed font-light text-sm sm:text-base">Single-point-of-failure economic model with no secondary revenue streams.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aranya Protocol -->
+                    <div class="p-8 sm:p-12 lg:p-16 bg-white relative">
+                        <div class="absolute top-0 right-0 p-6 sm:p-8 hidden sm:block">
+                            <span class="material-symbols-outlined text-brand/10" style="font-size:80px">verified</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-10 sm:mb-16">
+                            <div class="w-2 h-2 rounded-full bg-brand" style="animation: pulse-glow 2s infinite;"></div>
+                            <h3 class="font-label text-xs uppercase tracking-[0.3em] font-bold text-brand">Aranya Seva Protocol</h3>
+                        </div>
+                        <div class="space-y-12 sm:space-y-20">
+                            <div>
+                                <h4 class="font-headline text-xl sm:text-2xl font-bold mb-3 text-brand">Regenerative Polyculture</h4>
+                                <p class="font-body text-stone-700 leading-relaxed font-medium text-sm sm:text-base">Exponential soil health recovery through multi-layered biological interactions and nitrogen fixation.</p>
+                                <div class="mt-4 h-1 w-full bg-stone-100 rounded-full overflow-hidden"><div class="h-full bg-brand rounded-full" style="width:100%"></div></div>
+                            </div>
+                            <div>
+                                <h4 class="font-headline text-xl sm:text-2xl font-bold mb-3 text-brand">Diversified Asset Yield</h4>
+                                <p class="font-body text-stone-700 leading-relaxed font-medium text-sm sm:text-base">Stacked revenue cycles from short-term intercrops to multi-decade high-value timber reserves.</p>
+                                <div class="mt-4 h-1 w-full bg-stone-100 rounded-full overflow-hidden"><div class="h-full bg-brand rounded-full" style="width:80%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== PILLARS SECTION ====== -->
+        <section class="py-20 sm:py-28 lg:py-40 px-6 sm:px-10 lg:px-16 bg-stone-50" id="pillars">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="text-center mb-16 sm:mb-24 lg:mb-32 reveal">
+                    <span class="font-label text-[10px] uppercase tracking-[0.5em] text-brand/50 block mb-5">Foundational Modules</span>
+                    <h2 class="font-headline text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-brand mb-6 tracking-tight">The Biological Framework</h2>
+                    <div class="w-12 sm:w-16 h-px bg-brand/20 mx-auto"></div>
+                </div>
+
+                <!-- Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 lg:gap-x-20 gap-y-16 sm:gap-y-24 lg:gap-y-32">
+                    <!-- Pillar 1 -->
+                    <div class="pillar-card reveal">
+                        <div class="relative mb-8 sm:mb-10 overflow-hidden border border-stone-200 rounded">
+                            <img class="w-full aspect-[16/9] object-cover grayscale"
+                                 alt="Macro photograph of vibrant green leaves"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwRD-uPHD6bso_75MbP3YuocXfz47ppU1qxspr-bbVM3rXcASEld084pzgAyZ-afF0hQUpjvhvn-jwpg-wbwuThn1wovr7gFjEnEUPg2lI0_uDB87Yr2Gqe00-5AETfcHIDokKG5S4fT7N-K4933EnNock1ixgCFYACa4CFQIGqoknJeP2V934NjTA-kIYlD9eF-91u_OVPArmsujTksH9DHVxDfxr883poWfHsgzYVgH4Mm8feE8vSAcPB8o0siWX9ZztHTHk9Hc" />
+                            <div class="absolute top-0 right-0 bg-brand text-white px-3 py-2 font-label text-[10px] tracking-widest">MOD_01</div>
+                        </div>
+                        <div class="flex gap-5 sm:gap-8">
+                            <span class="font-label text-3xl sm:text-4xl text-stone-200 font-bold">01</span>
+                            <div>
+                                <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-bold text-brand mb-4">Companion Architecture</h3>
+                                <p class="font-body text-sm sm:text-base lg:text-lg text-stone-600 leading-relaxed max-w-xl">
+                                    Precise botanical groupings designed to create self-fertilizing environments. Our systems reduce nitrogen fertilizer requirements by 40% through integrated biological fixation.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="pillar-card reveal">
+                        <div class="relative mb-8 sm:mb-10 overflow-hidden border border-stone-200 rounded">
+                            <img class="w-full aspect-[16/9] object-cover grayscale"
+                                 alt="Layered forest floor ecosystem"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUZadgjQNa9ALHORx2n_JbabIBH2T6B4M_4mELeGBkU4h1JKxN5AhvtoDQ5zRnOPDCXSoQXdPToNW-sAAOgePgA6EmTiZL6HPfDIY9t0pFoxrut9a78XcAtSoe03n_6kCnHxaqOO9QwDHKJ58I12emGBbHafmfPiUS6Pz2jGtcDNpCoD35hzvFJ_G598kG0xZZRqOWO1F4N-3iSr32Dgy-xtmCapbg5_aQrn_XjdS25guk1B1Pu9f98xmOpNNMOu2Kn5aLnjhA5zs" />
+                            <div class="absolute top-0 right-0 bg-brand text-white px-3 py-2 font-label text-[10px] tracking-widest">MOD_02</div>
+                        </div>
+                        <div class="flex gap-5 sm:gap-8">
+                            <span class="font-label text-3xl sm:text-4xl text-stone-200 font-bold">02</span>
+                            <div>
+                                <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-bold text-brand mb-4">Stratified Canopy Logic</h3>
+                                <p class="font-body text-sm sm:text-base lg:text-lg text-stone-600 leading-relaxed max-w-xl">
+                                    Engineered vertical layers maximizing photosynthetic efficiency per square meter while fostering unique micro-climates that accelerate biomass production.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="pillar-card reveal">
+                        <div class="relative mb-8 sm:mb-10 overflow-hidden border border-stone-200 rounded">
+                            <img class="w-full aspect-[16/9] object-cover grayscale"
+                                 alt="Misty mountain peak forest"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH6fT5KVc4fz6IgeeFaRNgulXPpNtT7ozaMkyn0wMHA7VXDz1yVQkAFAInZi2gSCytMYB3K-w-XDCd5bJ65RiunHdqJTcVrQh7ou099WQ7LfIPbYm9vxf-PnZqn_kJBTW8-MD4GdsxQbd48wTUOrXXpUGtHRtxjsDt6JKw6-dhy2GcdKQLQ6fVG9z8GUFPXh5O59qG_RPlgGIYMhLB0qWToF9L7I3cxE_4SDNo_fuGtdkRuoXDx_bSEu8w81hFt57ZfsRvMR8wZvo" />
+                            <div class="absolute top-0 right-0 bg-brand text-white px-3 py-2 font-label text-[10px] tracking-widest">MOD_03</div>
+                        </div>
+                        <div class="flex gap-5 sm:gap-8">
+                            <span class="font-label text-3xl sm:text-4xl text-stone-200 font-bold">03</span>
+                            <div>
+                                <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-bold text-brand mb-4">Fungal Infrastructure</h3>
+                                <p class="font-body text-sm sm:text-base lg:text-lg text-stone-600 leading-relaxed max-w-xl">
+                                    Implementation of mycorrhizal networks to enhance drought resistance and nutrient uptake. We build the "underground internet" for sustained ecosystem health.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 4 -->
+                    <div class="pillar-card reveal">
+                        <div class="relative mb-8 sm:mb-10 overflow-hidden border border-stone-200 rounded">
+                            <img class="w-full aspect-[16/9] object-cover grayscale"
+                                 alt="Premium wood texture close-up"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXSG5BuaVD6d5oJfyOwAFJ9IBZngaU5Mx8NlTb8yYM08rBuWN1ae3Ardwx7FXLkDWS2lsYfPGhjFUKaNIKXbkVfyplSgAXeKu1XVMBca_1RxVNQq98RkAHrJNbiWnPZEZtr3icXSHikD4J2QRtiN-nrPqy3aiSCfJow37hOyKmdiODWXGY0pt19o7RmKRFDauAev7I2_eeF2Ph4RVdr-PDtAafvCGX8IoM6EBO7E2TQnynaAipBhirU3OuC8eX1haUqoVYlbnP7Ck" />
+                            <div class="absolute top-0 right-0 bg-brand text-white px-3 py-2 font-label text-[10px] tracking-widest">MOD_04</div>
+                        </div>
+                        <div class="flex gap-5 sm:gap-8">
+                            <span class="font-label text-3xl sm:text-4xl text-stone-200 font-bold">04</span>
+                            <div>
+                                <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-bold text-brand mb-4">High-Yield Timber Assets</h3>
+                                <p class="font-body text-sm sm:text-base lg:text-lg text-stone-600 leading-relaxed max-w-xl">
+                                    Precision cultivation of elite native species including Red Sanders and Rosewood, converting conservation into a multi-generational financial legacy.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ASSESSMENT / LAB SECTION ====== -->
+        <section class="py-20 sm:py-28 lg:py-40 px-6 sm:px-10 lg:px-16 bg-brand relative overflow-hidden" id="assessment">
+            <!-- Grid overlay -->
+            <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 80px 80px;"></div>
+
+            <div class="max-w-7xl mx-auto relative z-10">
+                <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                    <!-- Left: text -->
+                    <div class="reveal">
+                        <span class="font-label text-[10px] uppercase tracking-[0.5em] text-accent block mb-5">Laboratory Assessment Protocol</span>
+                        <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-10 sm:mb-12 tracking-tight">Analytical Foundation</h2>
+                        <div class="space-y-10 sm:space-y-14">
+                            <div class="flex gap-5 sm:gap-8">
+                                <div class="text-accent font-label text-lg sm:text-xl flex-shrink-0">01/</div>
+                                <div>
+                                    <h4 class="font-headline text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">Geochemical Diagnostics</h4>
+                                    <p class="font-body text-stone-400 text-sm sm:text-base lg:text-lg leading-relaxed">Comprehensive laboratory profiling of soil pH, micronutrient density, and microbial respiration baseline.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-5 sm:gap-8">
+                                <div class="text-accent font-label text-lg sm:text-xl flex-shrink-0">02/</div>
+                                <div>
+                                    <h4 class="font-headline text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">LiDAR Topographical Mapping</h4>
+                                    <p class="font-body text-stone-400 text-sm sm:text-base lg:text-lg leading-relaxed">Centimeter-precise digital elevation models to engineer hydrology and optimize solar exposure vectors.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-5 sm:gap-8">
+                                <div class="text-accent font-label text-lg sm:text-xl flex-shrink-0">03/</div>
+                                <div>
+                                    <h4 class="font-headline text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">Predictive Yield Modeling</h4>
+                                    <p class="font-body text-stone-400 text-sm sm:text-base lg:text-lg leading-relaxed">Monte Carlo simulations forecasting biomass accumulation and carbon sequestration over 30-year cycles.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: data visualization card -->
+                    <div class="reveal relative">
+                        <div class="glass-dark p-8 sm:p-12 border border-white/10 rounded-lg shadow-2xl">
+                            <div class="flex flex-wrap justify-between items-center mb-10 pb-5 border-b border-white/10 gap-2">
+                                <span class="font-label text-[10px] uppercase tracking-widest text-white/40">Growth Projections [Y1-Y10]</span>
+                                <span class="font-label text-[10px] text-accent">LOC: 12.9°N</span>
+                            </div>
+
+                            <!-- Bar chart -->
+                            <div class="relative mb-10" style="height: 220px;">
+                                <div class="absolute inset-0 flex items-end gap-2 sm:gap-3">
+                                    <div class="flex-1 flex flex-col items-center h-full justify-end">
+                                        <span class="text-[9px] font-label text-white/30 mb-2">Y1</span>
+                                        <div class="w-full rounded-t" style="height: 16.6%; background: rgba(255,255,255,0.08);"></div>
+                                    </div>
+                                    <div class="flex-1 flex flex-col items-center h-full justify-end">
+                                        <span class="text-[9px] font-label text-white/30 mb-2">Y3</span>
+                                        <div class="w-full rounded-t" style="height: 33%; background: rgba(255,255,255,0.12);"></div>
+                                    </div>
+                                    <div class="flex-1 flex flex-col items-center h-full justify-end">
+                                        <span class="text-[9px] font-label text-white/30 mb-2">Y5</span>
+                                        <div class="w-full rounded-t" style="height: 50%; background: rgba(255,255,255,0.18);"></div>
+                                    </div>
+                                    <div class="flex-1 flex flex-col items-center h-full justify-end">
+                                        <span class="text-[9px] font-label text-white/30 mb-2">Y7</span>
+                                        <div class="w-full rounded-t" style="height: 70%; background: rgba(255,255,255,0.25);"></div>
+                                    </div>
+                                    <div class="flex-1 flex flex-col items-center h-full justify-end">
+                                        <span class="text-[9px] font-label text-accent mb-2">Y10</span>
+                                        <div class="w-full rounded-t" style="height: 100%; background: linear-gradient(to top, rgba(68,221,194,0.5), rgba(68,221,194,0.9));"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="grid grid-cols-2 gap-px bg-white/10 rounded overflow-hidden">
+                                <div class="bg-brand/60 p-5 sm:p-6">
+                                    <span class="block font-label text-[9px] uppercase text-white/40 mb-1">Projected Biomass</span>
+                                    <span class="text-2xl sm:text-3xl font-light text-white tracking-tighter">+240%</span>
+                                </div>
+                                <div class="bg-brand/60 p-5 sm:p-6">
+                                    <span class="block font-label text-[9px] uppercase text-white/40 mb-1">Sequestration Index</span>
+                                    <span class="text-2xl sm:text-3xl font-light text-white tracking-tighter">0.92</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SERVICE TIERS SECTION ====== -->
+        <section class="py-20 sm:py-28 lg:py-40 px-6 sm:px-10 lg:px-16 bg-white" id="tiers">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="reveal flex flex-col md:flex-row justify-between items-start md:items-end mb-16 sm:mb-24 gap-6">
+                    <div class="max-w-2xl">
+                        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-brand/40 block mb-3">Investment Framework</span>
+                        <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-brand tracking-tight">Engagement Tiers</h2>
+                    </div>
+                    <p class="font-body text-stone-500 max-w-sm md:text-right font-light text-sm sm:text-base">
+                        From diagnostic blueprints to end-to-end biological stewardship. Select the protocol that aligns with your land vision.
+                    </p>
+                </div>
+
+                <!-- Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-0 lg:divide-x lg:divide-stone-100 lg:border lg:border-stone-100 lg:rounded-lg lg:overflow-hidden">
+                    <!-- Tier 1 -->
+                    <div class="reveal tier-card bg-white p-8 sm:p-10 lg:p-14 flex flex-col border border-stone-100 lg:border-0 rounded-lg lg:rounded-none">
+                        <div class="mb-10">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-brand/40 block mb-3">Tier 01</span>
+                            <h3 class="font-headline text-2xl sm:text-3xl font-bold text-brand mb-4">Diagnostic Design</h3>
+                            <p class="font-body text-stone-500 leading-relaxed font-light text-sm sm:text-base mb-8">Complete technical audit including soil science, LiDAR mapping, and custom species selection masterplan.</p>
+                        </div>
+                        <div class="mt-auto">
+                            <ul class="space-y-3 font-body text-sm text-stone-500 mb-8">
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-brand/20 flex-shrink-0"></span> 3D Terrain Geometry</li>
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-brand/20 flex-shrink-0"></span> Biotype Compatibility Data</li>
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-brand/20 flex-shrink-0"></span> Hydrological Architecture</li>
+                            </ul>
+                            <button class="w-full py-3.5 border border-brand/20 text-brand font-bold hover:bg-brand hover:text-white transition-all duration-300 rounded text-sm sm:text-base">Initiate Assessment</button>
+                        </div>
+                    </div>
+
+                    <!-- Tier 2 (Featured) -->
+                    <div class="reveal tier-card bg-brand p-8 sm:p-10 lg:p-14 flex flex-col text-white relative shadow-2xl rounded-lg lg:rounded-none border-0 z-10">
+                        <div class="absolute top-4 right-4 sm:top-6 sm:right-6">
+                            <span class="font-label text-[9px] text-accent tracking-[0.2em] font-bold bg-brand-light/60 px-3 py-1 rounded-full">MOST DEPLOYED</span>
+                        </div>
+                        <div class="mb-10 mt-4 sm:mt-0">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-white/40 block mb-3">Tier 02</span>
+                            <h3 class="font-headline text-2xl sm:text-3xl font-bold mb-4">Full Execution</h3>
+                            <p class="font-body text-stone-300 leading-relaxed font-light text-sm sm:text-base mb-8">End-to-end implementation led by ecological horticulturalists utilizing proprietary planting methodologies.</p>
+                        </div>
+                        <div class="mt-auto">
+                            <ul class="space-y-3 font-body text-sm text-stone-400 mb-8">
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-accent/40 flex-shrink-0"></span> Certified Sapling Inventory</li>
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-accent/40 flex-shrink-0"></span> Soil Inoculation Protocol</li>
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-accent/40 flex-shrink-0"></span> Integrated Labor Logistics</li>
+                            </ul>
+                            <button class="w-full py-3.5 bg-accent text-brand font-bold hover:brightness-110 transition-all duration-300 rounded text-sm sm:text-base">Initiate Deployment</button>
+                        </div>
+                    </div>
+
+                    <!-- Tier 3 -->
+                    <div class="reveal tier-card bg-white p-8 sm:p-10 lg:p-14 flex flex-col border border-stone-100 lg:border-0 rounded-lg lg:rounded-none">
+                        <div class="mb-10">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-brand/40 block mb-3">Tier 03</span>
+                            <h3 class="font-headline text-2xl sm:text-3xl font-bold text-brand mb-4">Stewardship Archive</h3>
+                            <p class="font-body text-stone-500 leading-relaxed font-light text-sm sm:text-base mb-8">Long-term maintenance through the critical growth window until biological autonomy is achieved.</p>
+                        </div>
+                        <div class="mt-auto">
+                            <ul class="space-y-3 font-body text-sm text-stone-500 mb-8">
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-brand/20 flex-shrink-0"></span> Precision Pruning Protocols</li>
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-brand/20 flex-shrink-0"></span> Biomass Yield Training</li>
+                                <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-brand/20 flex-shrink-0"></span> Replacement Asset Guarantee</li>
+                            </ul>
+                            <button class="w-full py-3.5 border border-brand/20 text-brand font-bold hover:bg-brand hover:text-white transition-all duration-300 rounded text-sm sm:text-base">Initiate Stewardship</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="w-full border-t border-stone-200/50 bg-stone-100">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-6 sm:px-10 lg:px-16 py-12 sm:py-16 max-w-[1440px] mx-auto">
+            <div class="flex flex-col justify-between gap-8">
+                <div>
+                    <h2 class="font-headline text-sm font-bold tracking-widest text-brand mb-4 uppercase">ARANYA SEVA</h2>
+                    <p class="font-label text-stone-500 text-[11px] leading-relaxed max-w-sm uppercase tracking-wide">
+                        Regenerative Biological Data Systems. Engineering the future of land assets through scientific rigor and ecological precision.
+                    </p>
+                </div>
+                <div class="font-label text-brand text-[10px] uppercase tracking-[0.15em]">
+                    © 2024 Aranya Seva Biological Data Systems. All rights reserved.
+                </div>
+            </div>
+            <div class="flex flex-col md:items-end justify-between gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 md:text-right">
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Specimen Archive v2.0</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Flora Distribution Map</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Clinical Services</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Privacy & Encryption</a>
+                </div>
+                <div class="font-label text-[10px] uppercase tracking-[0.15em] text-stone-400">
+                    GPS: 12.9716° N, 77.5946° E
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ====== SCRIPTS ====== -->
+    <script>
+        // --- Mobile Menu ---
+        const hamburger = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        function closeMobileMenu() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // --- Sticky Header Background ---
+        const header = document.getElementById('site-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                header.style.background = 'rgba(248, 250, 249, 0.95)';
+                header.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+            } else {
+                header.style.background = 'transparent';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // --- Intersection Observer for Reveal ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
