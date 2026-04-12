@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Plant Estimator & Pricing Tool | ARANYA SEVA</title>
+    <meta name="description" content="Find the perfect plants for your land and get instant pricing estimates based on your specific requirements." />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "brand": "#01261f",
+                        "brand-light": "#1a3c34",
+                        "brand-surface": "#f8faf9",
+                        "accent": "#44ddc2",
+                        "accent-bright": "#68fade",
+                    },
+                    fontFamily: {
+                        headline: ['"Noto Serif"', 'serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                        label: ['"Space Grotesk"', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        /* Base */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            margin: 0; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Material icons */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom utilities */
+        .text-gradient {
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 60%, #2d5a4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(68, 221, 194, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(68, 221, 194, 0); }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile menu overlay */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(1, 38, 31, 0.97);
+            backdrop-filter: blur(24px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .mobile-menu.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-menu a {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.75rem;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .mobile-menu a:hover { color: #44ddc2; }
+
+        /* Hamburger */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 110;
+            padding: 8px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #01261f;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+            background: #fff;
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+            background: #fff;
+        }
+
+        /* CTA button */
+        .btn-primary {
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 100%);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .btn-primary:hover::after { opacity: 1; }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(1, 38, 31, 0.35);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* Plant card */
+        .plant-card {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .plant-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        /* Quantity input */
+        .qty-input {
+            appearance: none;
+            -moz-appearance: textfield;
+        }
+        .qty-input::-webkit-inner-spin-button,
+        .qty-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Loading shimmer */
+        .skeleton {
+            background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        /* Summary card glow */
+        .summary-glow {
+            position: relative;
+        }
+        .summary-glow::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #44ddc2, #01261f, #44ddc2);
+            z-index: -1;
+            opacity: 0.4;
+            filter: blur(8px);
+        }
+
+        /* Selection Chips */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .chip-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background-color: #f8faf9;
+            color: #78716c;
+            font-size: 0.75rem;
+            font-family: 'Space Grotesk', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chip-btn:hover {
+            border-color: #01261f;
+            color: #01261f;
+        }
+        .chip-btn.selected {
+            background-color: #01261f;
+            border-color: #01261f;
+            color: #ffffff;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f8faf9; }
+        ::-webkit-scrollbar-thumb { background: #c1c8c4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #01261f; }
+
+        /* Tag chip */
+        .tag-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        /* Price highlight */
+        .price-pop {
+            animation: countUp 0.4s ease-out forwards;
+        }
+
+        /* No results */
+        .no-results {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-surface text-stone-800 font-body">
+
+    <!-- ====== HEADER / NAV ====== -->
+    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500" style="background: rgba(248, 250, 249, 0.95); box-shadow: 0 1px 20px rgba(0,0,0,0.06);">
+        <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
+            <!-- Logo -->
+            <a href="index.html" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative">
+                ARANYA SEVA
+            </a>
+
+            <!-- Desktop nav -->
+            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight">
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="index.html#pillars">Methodologies</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="index.html#assessment">Our Process</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="index.html#tiers">Engagement Models</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="proposal.html">Proposals</a>
+                <a class="text-brand border-b-2 border-brand pb-0.5" href="estimator.html">Estimator</a>
+            </div>
+
+            <!-- CTA + Hamburger -->
+            <div class="flex items-center gap-4">
+                <button class="btn-primary hidden sm:block px-7 py-2.5 rounded text-sm tracking-wide">
+                    Consultation
+                </button>
+                <div class="hamburger lg:hidden" id="hamburger-btn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </nav>
+        <div class="w-full h-px bg-stone-200/60"></div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="index.html#pillars" onclick="closeMobileMenu()">Methodologies</a>
+        <a href="index.html#assessment" onclick="closeMobileMenu()">Our Process</a>
+        <a href="index.html#tiers" onclick="closeMobileMenu()">Engagement Models</a>
+        <a href="proposal.html" onclick="closeMobileMenu()">Proposals</a>
+        <a href="estimator.html" onclick="closeMobileMenu()">Estimator</a>
+        <button class="btn-primary px-10 py-3 rounded text-base mt-4" onclick="closeMobileMenu()">Consultation</button>
+    </div>
+
+    <main class="pt-24 sm:pt-28">
+        <!-- ====== HERO ====== -->
+        <section class="px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mb-12 sm:mb-16">
+            <div class="bg-brand rounded-2xl p-8 sm:p-12 lg:p-16 relative overflow-hidden">
+                <!-- Decorative dots -->
+                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-accent text-2xl">psychiatry</span>
+                        <span class="font-label text-[11px] uppercase tracking-[0.3em] text-white/50">Plant Estimator Tool</span>
+                    </div>
+                    <h1 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-[1.1] mb-5 font-bold tracking-tight">
+                        Find the Right Plants.<br/>Get Instant Pricing.
+                    </h1>
+                    <p class="font-body text-base sm:text-lg text-white/60 leading-relaxed max-w-xl">
+                        Select your land conditions and requirements — our database of 2,500+ Indian plant species will recommend the best match and calculate your project cost instantly.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== FILTER FORM ====== -->
+        <section class="px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mb-10 sm:mb-14 reveal" id="filter-section">
+            <div class="bg-white border border-stone-200/60 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm">
+                <div class="flex items-center gap-3 mb-8">
+                    <span class="material-symbols-outlined text-brand text-xl">tune</span>
+                    <h2 class="font-headline text-xl sm:text-2xl text-brand">Your Requirements</h2>
+                </div>
+
+                <div class="space-y-6 mb-8">
+                    <!-- Plant Type & Sunlight -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Plant Type</label>
+                            <div class="chip-group" data-filter="type">
+                                <button class="chip-btn selected" data-value="">All Types</button>
+                                <button class="chip-btn" data-value="Tree">Tree</button>
+                                <button class="chip-btn" data-value="Shrub">Shrub</button>
+                                <button class="chip-btn" data-value="Herb">Herb</button>
+                                <button class="chip-btn" data-value="Flower">Flower</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Sunlight</label>
+                            <div class="chip-group" data-filter="sunlight">
+                                <button class="chip-btn selected" data-value="">Any Sunlight</button>
+                                <button class="chip-btn" data-value="Full Sun">Full Sun</button>
+                                <button class="chip-btn" data-value="Full Sun / Partial">Full Sun / Partial</button>
+                                <button class="chip-btn" data-value="Partial Sun">Partial Sun</button>
+                                <button class="chip-btn" data-value="Partial / Shade">Partial / Shade</button>
+                                <button class="chip-btn" data-value="Shade Tolerant">Shade Tolerant</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Region & Soil -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Region</label>
+                            <div class="chip-group" data-filter="region">
+                                <button class="chip-btn selected" data-value="">All Regions</button>
+                                <button class="chip-btn" data-value="Pan India">Pan India</button>
+                                <button class="chip-btn" data-value="South India">South India</button>
+                                <button class="chip-btn" data-value="North India">North India</button>
+                                <button class="chip-btn" data-value="East India">East India</button>
+                                <button class="chip-btn" data-value="West India">West India</button>
+                                <button class="chip-btn" data-value="Central India">Central India</button>
+                                <button class="chip-btn" data-value="Northeast India">Northeast</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Soil Type</label>
+                            <div class="chip-group" data-filter="soil">
+                                <button class="chip-btn selected" data-value="">All Soils</button>
+                                <button class="chip-btn" data-value="Alluvial">Alluvial</button>
+                                <button class="chip-btn" data-value="Black Cotton">Black Cotton</button>
+                                <button class="chip-btn" data-value="Clay">Clay</button>
+                                <button class="chip-btn" data-value="Clay Loam">Clay Loam</button>
+                                <button class="chip-btn" data-value="Loamy">Loamy</button>
+                                <button class="chip-btn" data-value="Red Laterite">Red</button>
+                                <button class="chip-btn" data-value="Sandy">Sandy</button>
+                                <button class="chip-btn" data-value="Sandy Loam">Sandy Loam</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Primary Purpose & Search -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Primary Purpose</label>
+                            <div class="chip-group" data-filter="usecase">
+                                <button class="chip-btn selected" data-value="">Any Purpose</button>
+                                <button class="chip-btn" data-value="Agro-forestry">Agro-forestry</button>
+                                <button class="chip-btn" data-value="Carbon Sequestration">Carbon</button>
+                                <button class="chip-btn" data-value="Coastal Protection">Coastal</button>
+                                <button class="chip-btn" data-value="Commercial / Timber">Timber</button>
+                                <button class="chip-btn" data-value="Decorative / Ornamental">Ornamental</button>
+                                <button class="chip-btn" data-value="Environmental / AQI">Environment</button>
+                                <button class="chip-btn" data-value="Kitchen Garden">Kitchen</button>
+                                <button class="chip-btn" data-value="Medicinal / Ayurvedic">Medicinal</button>
+                                <button class="chip-btn" data-value="Roadside Planting">Roadside</button>
+                                <button class="chip-btn" data-value="Urban Greening">Urban</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block" for="filter-search">Search by Name</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-lg">search</span>
+                                <input id="filter-search" type="text" placeholder="e.g. Neem, Bamboo..."
+                                       class="w-full bg-stone-50 border border-stone-200 rounded-lg pl-10 pr-4 py-3 font-body text-sm text-brand placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all duration-200" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-accent text-lg">database</span>
+                        <p class="font-label text-[11px] uppercase tracking-wider text-stone-400">
+                            <span id="result-count" class="text-brand font-bold">0</span> plants found
+                        </p>
+                    </div>
+                    <button id="btn-reset" class="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-stone-200 text-stone-500 hover:border-brand hover:text-brand transition-all duration-200 font-label text-xs uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-sm">restart_alt</span>
+                        Reset Filters
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ORDER SUMMARY (floating) ====== -->
+        <div id="order-summary" class="hidden fixed bottom-6 right-6 z-40 summary-glow">
+            <div class="bg-brand text-white rounded-2xl p-5 sm:p-6 min-w-[280px] sm:min-w-[320px] shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-accent text-lg">shopping_cart</span>
+                        <span class="font-label text-[11px] uppercase tracking-wider text-white/60">Order Summary</span>
+                    </div>
+                    <button id="btn-close-summary" class="text-white/40 hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                    </button>
+                </div>
+                <div id="summary-items" class="space-y-2 mb-4 max-h-40 overflow-y-auto pr-1" style="scrollbar-width: thin;">
+                    <!-- Dynamically populated -->
+                </div>
+                <div class="border-t border-white/10 pt-4">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="font-label text-[10px] uppercase text-white/40 mb-1">Total Plants</p>
+                            <p class="font-headline text-lg text-white" id="summary-total-qty">0</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-label text-[10px] uppercase text-white/40 mb-1">Estimated Cost</p>
+                            <p class="font-headline text-2xl sm:text-3xl text-accent-bright price-pop" id="summary-total-price">₹0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== RESULTS GRID ====== -->
+        <section class="px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mb-20 sm:mb-32" id="results-section">
+            <!-- Loading state -->
+            <div id="loading-state" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                <div class="skeleton h-80 rounded-2xl"></div>
+                <div class="skeleton h-80 rounded-2xl"></div>
+                <div class="skeleton h-80 rounded-2xl"></div>
+                <div class="skeleton h-80 rounded-2xl"></div>
+                <div class="skeleton h-80 rounded-2xl"></div>
+                <div class="skeleton h-80 rounded-2xl"></div>
+            </div>
+
+            <!-- No results -->
+            <div id="no-results" class="hidden text-center py-20 no-results">
+                <span class="material-symbols-outlined text-stone-300 text-6xl mb-4 block">psychiatry</span>
+                <h3 class="font-headline text-2xl text-brand mb-2">No Plants Found</h3>
+                <p class="font-body text-stone-500 text-sm">Try adjusting your filters to see matching species.</p>
+            </div>
+
+            <!-- Plant cards grid -->
+            <div id="plant-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6" style="display:none;">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Load more -->
+            <div id="load-more-container" class="hidden text-center mt-10">
+                <button id="btn-load-more" class="inline-flex items-center gap-2 px-8 py-3 rounded-lg border border-stone-200 text-brand hover:bg-brand hover:text-white transition-all duration-300 font-label text-xs uppercase tracking-wider">
+                    <span class="material-symbols-outlined text-sm">expand_more</span>
+                    Load More Plants
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="w-full border-t border-stone-200/50 bg-stone-100">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-6 sm:px-10 lg:px-16 py-12 sm:py-16 max-w-[1440px] mx-auto">
+            <div class="flex flex-col justify-between gap-8">
+                <div>
+                    <h2 class="font-headline text-sm font-bold tracking-widest text-brand mb-4 uppercase">ARANYA SEVA</h2>
+                    <p class="font-label text-stone-500 text-[11px] leading-relaxed max-w-sm uppercase tracking-wide">
+                        Data-driven plantation solutions. Engineering the future of land assets through scientific rigor and sustainable practices.
+                    </p>
+                </div>
+                <div class="font-label text-brand text-[10px] uppercase tracking-[0.15em]">
+                    © 2024 Aranya Seva. All rights reserved.
+                </div>
+            </div>
+            <div class="flex flex-col md:items-end justify-between gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 md:text-right">
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="index.html">Home</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="proposal.html">Proposals</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="estimator.html">Plant Estimator</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Privacy Policy</a>
+                </div>
+                <div class="font-label text-[10px] uppercase tracking-[0.15em] text-stone-400">
+                    Database: 2,500+ Indian Plant Species
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ====== SCRIPTS ====== -->
+    <script>
+        // --- State ---
+        let allPlants = [];
+        let filteredPlants = [];
+        let displayedCount = 0;
+        const PAGE_SIZE = 30;
+        const cart = {}; // { plantId: { name, qty, priceMin, priceMax } }
+
+        // --- DOM ---
+        const plantGrid = document.getElementById('plant-grid');
+        const loadingState = document.getElementById('loading-state');
+        const noResults = document.getElementById('no-results');
+        const resultCount = document.getElementById('result-count');
+        const loadMoreContainer = document.getElementById('load-more-container');
+        const orderSummary = document.getElementById('order-summary');
+
+        // --- Filters State ---
+        const activeFilters = {
+            region: '',
+            soil: '',
+            sunlight: '',
+            type: '',
+            usecase: '',
+        };
+        const filterSearch = document.getElementById('filter-search');
+
+        // --- Parse CSV ---
+        function loadCSV() {
+            Papa.parse('India_Plant_Database_Cleaned(India Plant Database).csv', {
+                download: true,
+                header: false,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const rows = results.data;
+                    // Row 0 is category header, row 1 is column header
+                    // Actual data starts at row 2
+                    const headers = rows[1];
+                    allPlants = [];
+
+                    for (let i = 2; i < rows.length; i++) {
+                        const r = rows[i];
+                        if (!r[1] || r[1].trim() === '') continue;
+
+                        allPlants.push({
+                            id: r[0]  || '',
+                            name: r[1] || '',
+                            scientific: r[2] || '',
+                            family: r[3] || '',
+                            otherNames: r[4] || '',
+                            plantType: r[5] || '',
+                            lifecycle: r[6] || '',
+                            growthRate: r[7] || '',
+                            matureHeight: r[8] || '',
+                            matureWidth: r[9] || '',
+                            rootType: r[10] || '',
+                            sunlight: r[11] || '',
+                            watering: r[12] || '',
+                            soilType: r[13] || '',
+                            soilPH: r[14] || '',
+                            tempRange: r[15] || '',
+                            humidity: r[16] || '',
+                            region: r[17] || '',
+                            climateZone: r[18] || '',
+                            hardiness: r[19] || '',
+                            latLong: r[20] || '',
+                            urbanRural: r[21] || '',
+                            oxygenProd: r[22] || '',
+                            co2Absorb: r[23] || '',
+                            pollutionTol: r[24] || '',
+                            careLevel: r[25] || '',
+                            pruning: r[26] || '',
+                            fertilizer: r[27] || '',
+                            pestResist: r[28] || '',
+                            disease: r[29] || '',
+                            growthPattern: r[30] || '',
+                            canopyType: r[31] || '',
+                            leafType: r[32] || '',
+                            flowerSeason: r[33] || '',
+                            fruitSeason: r[34] || '',
+                            costPerPlant: r[35] || '',
+                            availability: r[36] || '',
+                            nurserySource: r[37] || '',
+                            plantationTime: r[38] || '',
+                            areaRequired: r[39] || '',
+                            plantDensity: r[40] || '',
+                            spacing: r[41] || '',
+                            geoCoords: r[42] || '',
+                            description: r[43] || '',
+                            benefits: r[44] || '',
+                            useCases: r[45] || '',
+                        });
+                    }
+
+                    applyFilters();
+                    loadingState.style.display = 'none';
+                },
+                error: function(err) {
+                    console.error('CSV Parse Error:', err);
+                    loadingState.innerHTML = '<div class="col-span-3 text-center py-20"><p class="text-red-500 font-label text-sm">Failed to load plant database. Please refresh the page.</p></div>';
+                }
+            });
+        }
+
+        // --- Parse price range like "?806 - ?1612" → { min: 806, max: 1612 } ---
+        function parsePrice(priceStr) {
+            if (!priceStr) return { min: 0, max: 0 };
+            // Extract all numbers from the string
+            const nums = priceStr.match(/[\d]+(?:\.[\d]+)?/g);
+            if (!nums || nums.length === 0) return { min: 0, max: 0 };
+            const values = nums.map(Number).filter(n => !isNaN(n) && n > 0);
+            if (values.length >= 2) {
+                return { min: Math.round(Math.min(...values)), max: Math.round(Math.max(...values)) };
+            }
+            if (values.length === 1) {
+                return { min: Math.round(values[0]), max: Math.round(values[0]) };
+            }
+            return { min: 0, max: 0 };
+        }
+
+        // --- Filter logic ---
+        function applyFilters() {
+            const region = activeFilters.region;
+            const soil = activeFilters.soil;
+            const sunlight = activeFilters.sunlight;
+            const type = activeFilters.type;
+            const usecase = activeFilters.usecase;
+            const search = filterSearch.value.trim().toLowerCase();
+
+            filteredPlants = allPlants.filter(p => {
+                if (region && p.region !== region) return false;
+                if (soil && p.soilType !== soil) return false;
+                if (sunlight && p.sunlight !== sunlight) return false;
+                if (type && p.plantType !== type) return false;
+                if (usecase && p.useCases !== usecase) return false;
+                if (search) {
+                    const hay = (p.name + ' ' + p.scientific + ' ' + p.otherNames + ' ' + p.family).toLowerCase();
+                    if (!hay.includes(search)) return false;
+                }
+                return true;
+            });
+
+            resultCount.textContent = filteredPlants.length;
+            displayedCount = 0;
+            plantGrid.innerHTML = '';
+            renderNextPage();
+        }
+
+        // --- Render plant cards ---
+        function renderNextPage() {
+            const end = Math.min(displayedCount + PAGE_SIZE, filteredPlants.length);
+            
+            if (filteredPlants.length === 0) {
+                noResults.classList.remove('hidden');
+                plantGrid.style.display = 'none';
+                loadMoreContainer.classList.add('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            plantGrid.style.display = 'grid';
+
+            for (let i = displayedCount; i < end; i++) {
+                const p = filteredPlants[i];
+                const price = parsePrice(p.costPerPlant);
+                const avgPrice = Math.round((price.min + price.max) / 2);
+                const currentQty = cart[p.id] ? cart[p.id].qty : 0;
+
+                const card = document.createElement('div');
+                card.className = 'plant-card bg-white border border-stone-200/60 rounded-2xl overflow-hidden';
+                card.style.animationDelay = `${(i - displayedCount) * 0.05}s`;
+
+                // Use-case color mapping
+                const ucColors = {
+                    'Agro-forestry': 'bg-green-50 text-green-700',
+                    'Carbon Sequestration': 'bg-emerald-50 text-emerald-700',
+                    'Coastal Protection': 'bg-blue-50 text-blue-700',
+                    'Commercial / Timber': 'bg-amber-50 text-amber-700',
+                    'Decorative / Ornamental': 'bg-pink-50 text-pink-700',
+                    'Environmental / AQI': 'bg-teal-50 text-teal-700',
+                    'Kitchen Garden': 'bg-orange-50 text-orange-700',
+                    'Medicinal / Ayurvedic': 'bg-purple-50 text-purple-700',
+                    'Roadside Planting': 'bg-stone-100 text-stone-700',
+                    'Urban Greening': 'bg-lime-50 text-lime-700',
+                };
+                const ucClass = ucColors[p.useCases] || 'bg-stone-100 text-stone-600';
+
+                // Type icon
+                const typeIcons = {
+                    'Tree': 'park',
+                    'Shrub': 'grass',
+                    'Herb': 'eco',
+                    'Flower': 'local_florist',
+                };
+                const typeIcon = typeIcons[p.plantType] || 'psychiatry';
+
+                card.innerHTML = `
+                    <div class="p-5 sm:p-6">
+                        <!-- Header -->
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-surface flex items-center justify-center flex-shrink-0">
+                                    <span class="material-symbols-outlined text-brand text-xl">${typeIcon}</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-headline text-lg text-brand leading-tight">${p.name}</h3>
+                                    <p class="font-label text-[10px] text-stone-400 italic">${p.scientific}</p>
+                                </div>
+                            </div>
+                            <span class="tag-chip ${ucClass} flex-shrink-0 ml-2">${p.useCases || 'General'}</span>
+                        </div>
+
+                        <!-- Description snippet -->
+                        <p class="font-body text-xs text-stone-500 leading-relaxed mb-5 line-clamp-2">${p.benefits || p.description || 'A versatile Indian plant species suitable for various applications.'}</p>
+
+                        <!-- Stats grid -->
+                        <div class="grid grid-cols-3 gap-3 mb-5">
+                            <div class="bg-stone-50 rounded-lg p-2.5 text-center">
+                                <p class="font-label text-[9px] uppercase text-stone-400 mb-0.5">Height</p>
+                                <p class="font-body text-xs text-brand font-semibold">${p.matureHeight ? p.matureHeight.split('-')[0].trim() : '—'}</p>
+                            </div>
+                            <div class="bg-stone-50 rounded-lg p-2.5 text-center">
+                                <p class="font-label text-[9px] uppercase text-stone-400 mb-0.5">Growth</p>
+                                <p class="font-body text-xs text-brand font-semibold">${p.growthRate || '—'}</p>
+                            </div>
+                            <div class="bg-stone-50 rounded-lg p-2.5 text-center">
+                                <p class="font-label text-[9px] uppercase text-stone-400 mb-0.5">Care</p>
+                                <p class="font-body text-xs text-brand font-semibold">${p.careLevel || '—'}</p>
+                            </div>
+                        </div>
+
+                        <!-- Info chips -->
+                        <div class="flex flex-wrap gap-1.5 mb-5">
+                            <span class="tag-chip bg-brand-surface text-brand/70 font-label">
+                                <span class="material-symbols-outlined text-[11px]">water_drop</span> ${p.watering || '—'}
+                            </span>
+                            <span class="tag-chip bg-brand-surface text-brand/70 font-label">
+                                <span class="material-symbols-outlined text-[11px]">wb_sunny</span> ${p.sunlight || '—'}
+                            </span>
+                            <span class="tag-chip bg-brand-surface text-brand/70 font-label">
+                                <span class="material-symbols-outlined text-[11px]">landscape</span> ${p.soilType || '—'}
+                            </span>
+                        </div>
+
+                        <!-- Price & Quantity -->
+                        <div class="border-t border-stone-100 pt-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="font-label text-[9px] uppercase text-stone-400">Price per Plant</p>
+                                    <p class="font-headline text-lg text-brand">₹${price.min > 0 ? price.min.toLocaleString('en-IN') : '—'} <span class="text-xs text-stone-400 font-body">– ₹${price.max > 0 ? price.max.toLocaleString('en-IN') : '—'}</span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center border border-stone-200 rounded-lg overflow-hidden flex-1">
+                                    <button class="qty-btn w-10 h-10 flex items-center justify-center text-stone-400 hover:bg-stone-100 hover:text-brand transition-colors" data-id="${p.id}" data-action="minus">
+                                        <span class="material-symbols-outlined text-lg">remove</span>
+                                    </button>
+                                    <input type="number" class="qty-input w-full h-10 text-center font-label text-sm text-brand border-x border-stone-200 focus:outline-none" 
+                                           data-id="${p.id}" data-name="${p.name}" data-price-min="${price.min}" data-price-max="${price.max}"
+                                           value="${currentQty}" min="0" placeholder="0" />
+                                    <button class="qty-btn w-10 h-10 flex items-center justify-center text-stone-400 hover:bg-stone-100 hover:text-brand transition-colors" data-id="${p.id}" data-action="plus">
+                                        <span class="material-symbols-outlined text-lg">add</span>
+                                    </button>
+                                </div>
+                                <div class="text-right min-w-[90px]">
+                                    <p class="font-label text-[9px] uppercase text-stone-400">Subtotal</p>
+                                    <p class="font-headline text-base text-accent subtotal-display" data-id="${p.id}">${currentQty > 0 ? '₹' + (currentQty * avgPrice).toLocaleString('en-IN') : '—'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                plantGrid.appendChild(card);
+            }
+
+            displayedCount = end;
+
+            // Show/hide load more
+            if (displayedCount < filteredPlants.length) {
+                loadMoreContainer.classList.remove('hidden');
+            } else {
+                loadMoreContainer.classList.add('hidden');
+            }
+
+            // Bind events for new cards
+            bindCardEvents();
+        }
+
+        // --- Bind quantity events ---
+        function bindCardEvents() {
+            document.querySelectorAll('.qty-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const id = this.dataset.id;
+                    const action = this.dataset.action;
+                    const input = document.querySelector(`.qty-input[data-id="${id}"]`);
+                    let val = parseInt(input.value) || 0;
+                    if (action === 'plus') val++;
+                    if (action === 'minus' && val > 0) val--;
+                    input.value = val;
+                    updateCart(id, input.dataset.name, val, parseInt(input.dataset.priceMin), parseInt(input.dataset.priceMax));
+                };
+            });
+
+            document.querySelectorAll('.qty-input').forEach(input => {
+                input.oninput = function() {
+                    let val = parseInt(this.value) || 0;
+                    if (val < 0) val = 0;
+                    updateCart(this.dataset.id, this.dataset.name, val, parseInt(this.dataset.priceMin), parseInt(this.dataset.priceMax));
+                };
+            });
+        }
+
+        // --- Cart logic ---
+        function updateCart(id, name, qty, priceMin, priceMax) {
+            const avgPrice = Math.round((priceMin + priceMax) / 2);
+
+            if (qty > 0) {
+                cart[id] = { name, qty, priceMin, priceMax, avgPrice };
+            } else {
+                delete cart[id];
+            }
+
+            // Update subtotal display
+            const subtotalEl = document.querySelector(`.subtotal-display[data-id="${id}"]`);
+            if (subtotalEl) {
+                if (qty > 0) {
+                    subtotalEl.textContent = '₹' + (qty * avgPrice).toLocaleString('en-IN');
+                    subtotalEl.classList.add('text-accent');
+                } else {
+                    subtotalEl.textContent = '—';
+                    subtotalEl.classList.remove('text-accent');
+                }
+            }
+
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            const entries = Object.entries(cart);
+            
+            if (entries.length === 0) {
+                orderSummary.classList.add('hidden');
+                return;
+            }
+
+            orderSummary.classList.remove('hidden');
+
+            const summaryItems = document.getElementById('summary-items');
+            let totalQty = 0;
+            let totalMinPrice = 0;
+            let totalMaxPrice = 0;
+
+            summaryItems.innerHTML = entries.map(([id, item]) => {
+                totalQty += item.qty;
+                totalMinPrice += item.qty * item.priceMin;
+                totalMaxPrice += item.qty * item.priceMax;
+                const subtotal = item.qty * item.avgPrice;
+                return `
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-accent-bright font-label text-xs">${item.qty}×</span>
+                            <span class="text-white/80 font-body text-xs truncate">${item.name}</span>
+                        </div>
+                        <span class="text-white font-label text-xs flex-shrink-0 ml-3">₹${subtotal.toLocaleString('en-IN')}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('summary-total-qty').textContent = totalQty.toLocaleString('en-IN');
+
+            const totalAvg = Math.round((totalMinPrice + totalMaxPrice) / 2);
+            const priceEl = document.getElementById('summary-total-price');
+            priceEl.textContent = '₹' + totalAvg.toLocaleString('en-IN');
+            // Re-trigger animation
+            priceEl.style.animation = 'none';
+            priceEl.offsetHeight; // force reflow
+            priceEl.style.animation = '';
+        }
+
+        // --- Event listeners ---
+        document.querySelectorAll('.chip-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const group = this.closest('.chip-group');
+                const filterType = group.dataset.filter;
+                
+                group.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                activeFilters[filterType] = this.dataset.value;
+                applyFilters();
+            });
+        });
+
+        let searchTimeout;
+        filterSearch.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(applyFilters, 300);
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            document.querySelectorAll('.chip-group').forEach(group => {
+                group.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+                const defaultBtn = group.querySelector('.chip-btn[data-value=""]');
+                if (defaultBtn) defaultBtn.classList.add('selected');
+            });
+            activeFilters.region = '';
+            activeFilters.soil = '';
+            activeFilters.sunlight = '';
+            activeFilters.type = '';
+            activeFilters.usecase = '';
+            filterSearch.value = '';
+            applyFilters();
+        });
+
+        document.getElementById('btn-load-more').addEventListener('click', renderNextPage);
+
+        document.getElementById('btn-close-summary').addEventListener('click', () => {
+            orderSummary.classList.add('hidden');
+        });
+
+        // --- Mobile Menu ---
+        const hamburger = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        function closeMobileMenu() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // --- Reveal on scroll ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // --- Init ---
+        loadCSV();
+    </script>
+</body>
+</html>
