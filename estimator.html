@@ -303,6 +303,21 @@
         .no-results {
             animation: fadeIn 0.6s ease-out forwards;
         }
+
+        /* Print Template (Hidden by default) */
+        #print-template {
+            display: none;
+        }
+        @media print {
+            #print-template { display: block !important; background: white; color: black; padding: 40px; }
+            body > *:not(#print-template) { display: none !important; }
+            .print-header { border-bottom: 2px solid #01261f; padding-bottom: 20px; margin-bottom: 30px; }
+            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+            .print-table th { text-align: left; padding: 12px; border-bottom: 1px solid #eee; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-size: 10px; color: #666; }
+            .print-table td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+            .print-total { text-align: right; margin-top: 30px; }
+            .print-footer { margin-top: 50px; font-size: 10px; color: #999; text-align: center; }
+        }
     </style>
 </head>
 
@@ -484,11 +499,16 @@
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-accent text-lg">shopping_cart</span>
-                        <span class="font-label text-[11px] uppercase tracking-wider text-white/60">Order Summary</span>
+                        <span class="font-label text-[11px] uppercase tracking-wider text-white/60">Estimated Plan</span>
                     </div>
-                    <button id="btn-close-summary" class="text-white/40 hover:text-white transition-colors">
-                        <span class="material-symbols-outlined text-lg">close</span>
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <button id="btn-download" title="Download PDF Estimate" class="text-white/40 hover:text-accent transition-colors">
+                            <span class="material-symbols-outlined text-lg">download</span>
+                        </button>
+                        <button id="btn-close-summary" class="text-white/40 hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    </div>
                 </div>
                 <div id="summary-items" class="space-y-2 mb-4 max-h-40 overflow-y-auto pr-1" style="scrollbar-width: thin;">
                     <!-- Dynamically populated -->
@@ -540,7 +560,99 @@
                 </button>
             </div>
         </section>
+
     </main>
+
+    <!-- ====== CHECKOUT MODAL ====== -->
+    <div id="checkout-modal" class="fixed inset-0 z-[120] bg-brand/90 backdrop-blur-sm hidden flex-col items-center justify-center px-4" style="opacity: 0; transition: opacity 0.3s ease;">
+        <div class="bg-white rounded-2xl p-6 sm:p-10 w-full max-w-[500px] shadow-2xl relative">
+            <button id="btn-close-modal" class="absolute top-4 right-4 text-stone-400 hover:text-brand transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            
+            <div class="mb-6">
+                <h3 class="font-headline text-2xl text-brand mb-2">Save Estimate Details</h3>
+                <p class="font-body text-sm text-stone-500">Provide your project details to save and generate your PDF estimate.</p>
+            </div>
+
+            <form id="checkout-form" class="space-y-4">
+                <div>
+                    <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-1 block">Full Name / Organization *</label>
+                    <input type="text" id="cust-name" required class="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-2.5 font-body text-sm text-brand focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all duration-200" placeholder="e.g. John Doe">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-1 block">Email Address *</label>
+                        <input type="email" id="cust-email" required class="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-2.5 font-body text-sm text-brand focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all duration-200" placeholder="e.g. john@example.com">
+                    </div>
+                    <div>
+                        <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-1 block">Phone Number</label>
+                        <input type="tel" id="cust-phone" class="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-2.5 font-body text-sm text-brand focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all duration-200" placeholder="+91">
+                    </div>
+                </div>
+                <div>
+                    <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-1 block">Project Location / Size</label>
+                    <input type="text" id="cust-project" class="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-2.5 font-body text-sm text-brand focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all duration-200" placeholder="e.g. 5 Acres, Bangalore">
+                </div>
+                
+                <div class="pt-4 mt-2 border-t border-stone-100 flex items-center justify-end gap-3">
+                    <button type="button" id="btn-cancel-modal" class="px-5 py-2.5 rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-50 transition-colors font-body text-sm font-medium">Cancel</button>
+                    <button type="submit" class="btn-primary px-6 py-2.5 rounded-lg text-sm tracking-wide shadow-lg shadow-brand/20">Save & Download PDF</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== PRINT TEMPLATE (Ready for direct body child) ====== -->
+    <div id="print-template">
+        <div class="print-header">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 style="font-family: 'Noto Serif', serif; font-size: 28px; color: #01261f; margin: 0;">ARANYA SEVA</h1>
+                    <p style="font-family: 'Space Grotesk', sans-serif; font-size: 10px; color: #666; text-transform: uppercase; margin: 5px 0 0;">Regenerative Agriculture & Land Restoration</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="font-size: 12px; margin: 0; font-weight: bold; color: #01261f;">PROJECT ESTIMATE</p>
+                    <p id="print-date" style="font-size: 11px; color: #999; margin: 3px 0 0 0;"></p>
+                </div>
+            </div>
+            
+            <div id="print-customer-details" style="margin-top: 30px; font-size: 12px; line-height: 1.6;">
+                <!-- Customer Details Injected Here -->
+            </div>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <p style="font-family: 'Space Grotesk', sans-serif; font-size: 10px; color: #666; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px;">Land Requirements Applied</p>
+            <div id="print-requirements" style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 11px;">
+                <!-- Filter states will be injected here -->
+            </div>
+        </div>
+
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Plant Species</th>
+                    <th style="width: 15%; text-align: center;">Qty</th>
+                    <th style="width: 15%; text-align: right;">Avg Price</th>
+                    <th style="width: 20%; text-align: right;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="print-items">
+                <!-- Cart items will be injected here -->
+            </tbody>
+        </table>
+
+        <div class="print-total">
+            <p style="font-size: 12px; color: #666; margin-bottom: 5px;">Total Estimated Cost*</p>
+            <h2 id="print-grand-total" style="font-size: 32px; color: #01261f; margin: 0;">₹0</h2>
+            <p style="font-size: 10px; color: #999; margin-top: 10px;">*Disclaimer: Prices are estimated averages. Actual prices may vary depending on nursery sources, age of specimen, and seasonal availability.</p>
+        </div>
+
+        <div class="print-footer">
+            <p>Aranya Seva • Scientific Plantation Solutions • www.aranyaseva.com</p>
+        </div>
+    </div>
 
     <!-- ====== FOOTER ====== -->
     <footer class="w-full border-t border-stone-200/50 bg-stone-100">
@@ -577,7 +689,23 @@
         let filteredPlants = [];
         let displayedCount = 0;
         const PAGE_SIZE = 30;
-        const cart = {}; // { plantId: { name, qty, priceMin, priceMax } }
+        let cart = {}; // { plantId: { name, qty, priceMin, priceMax } }
+
+        // --- Load Cart from LocalStorage ---
+        function loadSavedCart() {
+            const saved = localStorage.getItem('aranya_estimator_cart');
+            if (saved) {
+                try {
+                    cart = JSON.parse(saved);
+                    updateOrderSummary();
+                } catch(e) { console.error('Error loading cart', e); }
+            }
+        }
+
+        // --- Save Cart to LocalStorage ---
+        function saveCart() {
+            localStorage.setItem('aranya_estimator_cart', JSON.stringify(cart));
+        }
 
         // --- DOM ---
         const plantGrid = document.getElementById('plant-grid');
@@ -666,6 +794,7 @@
 
                     applyFilters();
                     loadingState.style.display = 'none';
+                    loadSavedCart(); // Load saved state after database is ready
                 },
                 error: function(err) {
                     console.error('CSV Parse Error:', err);
@@ -893,6 +1022,8 @@
                 delete cart[id];
             }
 
+            saveCart(); // Save state on every update
+
             // Update subtotal display
             const subtotalEl = document.querySelector(`.subtotal-display[data-id="${id}"]`);
             if (subtotalEl) {
@@ -989,6 +1120,109 @@
 
         document.getElementById('btn-close-summary').addEventListener('click', () => {
             orderSummary.classList.add('hidden');
+        });
+
+        // --- Download / Modal Flow ---
+        const modal = document.getElementById('checkout-modal');
+        const checkoutForm = document.getElementById('checkout-form');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.style.opacity = '1', 10);
+        }
+
+        function closeModal() {
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        document.getElementById('btn-download').addEventListener('click', () => {
+            if (Object.keys(cart).length === 0) return;
+            openModal();
+        });
+
+        document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+        document.getElementById('btn-cancel-modal').addEventListener('click', closeModal);
+
+        checkoutForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // 1. Capture customer details
+            const customer = {
+                name: document.getElementById('cust-name').value.trim(),
+                email: document.getElementById('cust-email').value.trim(),
+                phone: document.getElementById('cust-phone').value.trim(),
+                project: document.getElementById('cust-project').value.trim(),
+            };
+
+            // 2. Save full order to a global orders array in localStorage
+            const savedOrders = JSON.parse(localStorage.getItem('aranya_full_orders') || '[]');
+            const newOrder = {
+                id: 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                date: new Date().toISOString(),
+                customer: customer,
+                cart: cart,
+                filters: activeFilters
+            };
+            savedOrders.push(newOrder);
+            localStorage.setItem('aranya_full_orders', JSON.stringify(savedOrders));
+
+            // 3. Populate PDF Template
+            const printDate = document.getElementById('print-date');
+            printDate.textContent = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            const printCust = document.getElementById('print-customer-details');
+            printCust.innerHTML = `
+                <div style="font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase;">Prepared For:</div>
+                <div style="font-size: 14px; font-weight: bold; color: #01261f;">${customer.name}</div>
+                ${customer.project ? `<div>Project: ${customer.project}</div>` : ''}
+                <div>Email: ${customer.email}</div>
+                ${customer.phone ? `<div>Phone: ${customer.phone}</div>` : ''}
+                <div style="margin-top: 10px; color: #0aaa88; font-weight: bold;">Order Reference: ${newOrder.id}</div>
+            `;
+
+            const printReqs = document.getElementById('print-requirements');
+            const activeReqs = [];
+            if (activeFilters.region) activeReqs.push(`Region: ${activeFilters.region}`);
+            if (activeFilters.soil) activeReqs.push(`Soil: ${activeFilters.soil}`);
+            if (activeFilters.sunlight) activeReqs.push(`Sunlight: ${activeFilters.sunlight}`);
+            if (activeFilters.type) activeReqs.push(`Type: ${activeFilters.type}`);
+            if (activeFilters.usecase) activeReqs.push(`Purpose: ${activeFilters.usecase}`);
+            
+            printReqs.innerHTML = activeReqs.map(r => `<div style="background: #f8faf9; border: 1px solid #e5e7eb; padding: 4px 10px; border-radius: 999px;"><strong>${r.split(':')[0]}</strong>: ${r.split(':')[1]}</div>`).join('') || '<div>No specific filters applied.</div>';
+
+            const printItems = document.getElementById('print-items');
+            let totalMin = 0, totalMax = 0;
+            const entries = Object.entries(cart);
+            
+            printItems.innerHTML = entries.map(([id, item]) => {
+                totalMin += item.qty * item.priceMin;
+                totalMax += item.qty * item.priceMax;
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">${item.name}</div>
+                            <div style="font-size: 10px; color: #666;">Species ID: ${id}</div>
+                        </td>
+                        <td style="text-align: center;">${item.qty}</td>
+                        <td style="text-align: right;">₹${item.avgPrice.toLocaleString('en-IN')}</td>
+                        <td style="text-align: right; font-weight: 600;">₹${(item.qty * item.avgPrice).toLocaleString('en-IN')}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const totalAvg = Math.round((totalMin + totalMax) / 2);
+            document.getElementById('print-grand-total').textContent = '₹' + totalAvg.toLocaleString('en-IN');
+
+            // 4. Trigger print and close modal
+            closeModal();
+            setTimeout(() => {
+                window.print();
+            }, 300); // Wait for modal to clear screen visually
         });
 
         // --- Mobile Menu ---
