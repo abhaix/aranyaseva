@@ -327,17 +327,17 @@
     <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500" style="background: rgba(248, 250, 249, 0.95); box-shadow: 0 1px 20px rgba(0,0,0,0.06);">
         <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
             <!-- Logo -->
-            <a href="index.html" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative">
+            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative">
                 ARANYA SEVA
             </a>
 
             <!-- Desktop nav -->
             <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight">
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="index.html#pillars">Methodologies</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="index.html#assessment">Our Process</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="index.html#tiers">Engagement Models</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="proposal.html">Proposals</a>
-                <a class="text-brand border-b-2 border-brand pb-0.5" href="estimator.html">Estimator</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="/#pillars">Methodologies</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="/#assessment">Our Process</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="/#tiers">Engagement Models</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="proposal">Proposals</a>
+                <a class="text-brand border-b-2 border-brand pb-0.5" href="estimator">Estimator</a>
             </div>
 
             <!-- CTA + Hamburger -->
@@ -355,11 +355,11 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu">
-        <a href="index.html#pillars" onclick="closeMobileMenu()">Methodologies</a>
-        <a href="index.html#assessment" onclick="closeMobileMenu()">Our Process</a>
-        <a href="index.html#tiers" onclick="closeMobileMenu()">Engagement Models</a>
-        <a href="proposal.html" onclick="closeMobileMenu()">Proposals</a>
-        <a href="estimator.html" onclick="closeMobileMenu()">Estimator</a>
+        <a href="/#pillars" onclick="closeMobileMenu()">Methodologies</a>
+        <a href="/#assessment" onclick="closeMobileMenu()">Our Process</a>
+        <a href="/#tiers" onclick="closeMobileMenu()">Engagement Models</a>
+        <a href="proposal" onclick="closeMobileMenu()">Proposals</a>
+        <a href="estimator" onclick="closeMobileMenu()">Estimator</a>
         <button class="btn-primary px-10 py-3 rounded text-base mt-4" onclick="closeMobileMenu()">Consultation</button>
     </div>
 
@@ -670,9 +670,9 @@
             </div>
             <div class="flex flex-col md:items-end justify-between gap-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 md:text-right">
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="index.html">Home</a>
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="proposal.html">Proposals</a>
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="estimator.html">Plant Estimator</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="/">Home</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="proposal">Proposals</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="estimator">Plant Estimator</a>
                     <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Privacy Policy</a>
                 </div>
                 <div class="font-label text-[10px] uppercase tracking-[0.15em] text-stone-400">
@@ -717,11 +717,11 @@
 
         // --- Filters State ---
         const activeFilters = {
-            region: '',
-            soil: '',
-            sunlight: '',
-            type: '',
-            usecase: '',
+            region: [],
+            soil: [],
+            sunlight: [],
+            type: [],
+            usecase: [],
         };
         const filterSearch = document.getElementById('filter-search');
 
@@ -821,19 +821,19 @@
 
         // --- Filter logic ---
         function applyFilters() {
-            const region = activeFilters.region;
-            const soil = activeFilters.soil;
-            const sunlight = activeFilters.sunlight;
-            const type = activeFilters.type;
-            const usecase = activeFilters.usecase;
+            const regions = activeFilters.region;
+            const soils = activeFilters.soil;
+            const sunlights = activeFilters.sunlight;
+            const types = activeFilters.type;
+            const usecases = activeFilters.usecase;
             const search = filterSearch.value.trim().toLowerCase();
 
             filteredPlants = allPlants.filter(p => {
-                if (region && p.region !== region) return false;
-                if (soil && p.soilType !== soil) return false;
-                if (sunlight && p.sunlight !== sunlight) return false;
-                if (type && p.plantType !== type) return false;
-                if (usecase && p.useCases !== usecase) return false;
+                if (regions.length > 0 && !regions.includes(p.region)) return false;
+                if (soils.length > 0 && !soils.includes(p.soilType)) return false;
+                if (sunlights.length > 0 && !sunlights.includes(p.sunlight)) return false;
+                if (types.length > 0 && !types.includes(p.plantType)) return false;
+                if (usecases.length > 0 && !usecases.includes(p.useCases)) return false;
                 if (search) {
                     const hay = (p.name + ' ' + p.scientific + ' ' + p.otherNames + ' ' + p.family).toLowerCase();
                     if (!hay.includes(search)) return false;
@@ -1086,11 +1086,34 @@
             btn.addEventListener('click', function() {
                 const group = this.closest('.chip-group');
                 const filterType = group.dataset.filter;
+                const value = this.dataset.value;
                 
-                group.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
-                this.classList.add('selected');
+                if (value === "") {
+                    // "All" selected
+                    group.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    activeFilters[filterType] = [];
+                } else {
+                    // Specific value selected
+                    const allBtn = group.querySelector('.chip-btn[data-value=""]');
+                    if (allBtn) allBtn.classList.remove('selected');
+                    
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        activeFilters[filterType] = activeFilters[filterType].filter(v => v !== value);
+                        
+                        // If nothing selected, select 'All'
+                        if (activeFilters[filterType].length === 0 && allBtn) {
+                            allBtn.classList.add('selected');
+                        }
+                    } else {
+                        this.classList.add('selected');
+                        if (!activeFilters[filterType].includes(value)) {
+                            activeFilters[filterType].push(value);
+                        }
+                    }
+                }
                 
-                activeFilters[filterType] = this.dataset.value;
                 applyFilters();
             });
         });
@@ -1107,11 +1130,11 @@
                 const defaultBtn = group.querySelector('.chip-btn[data-value=""]');
                 if (defaultBtn) defaultBtn.classList.add('selected');
             });
-            activeFilters.region = '';
-            activeFilters.soil = '';
-            activeFilters.sunlight = '';
-            activeFilters.type = '';
-            activeFilters.usecase = '';
+            activeFilters.region = [];
+            activeFilters.soil = [];
+            activeFilters.sunlight = [];
+            activeFilters.type = [];
+            activeFilters.usecase = [];
             filterSearch.value = '';
             applyFilters();
         });
@@ -1187,11 +1210,11 @@
 
             const printReqs = document.getElementById('print-requirements');
             const activeReqs = [];
-            if (activeFilters.region) activeReqs.push(`Region: ${activeFilters.region}`);
-            if (activeFilters.soil) activeReqs.push(`Soil: ${activeFilters.soil}`);
-            if (activeFilters.sunlight) activeReqs.push(`Sunlight: ${activeFilters.sunlight}`);
-            if (activeFilters.type) activeReqs.push(`Type: ${activeFilters.type}`);
-            if (activeFilters.usecase) activeReqs.push(`Purpose: ${activeFilters.usecase}`);
+            if (activeFilters.region.length) activeReqs.push(`Region: ${activeFilters.region.join(', ')}`);
+            if (activeFilters.soil.length) activeReqs.push(`Soil: ${activeFilters.soil.join(', ')}`);
+            if (activeFilters.sunlight.length) activeReqs.push(`Sunlight: ${activeFilters.sunlight.join(', ')}`);
+            if (activeFilters.type.length) activeReqs.push(`Type: ${activeFilters.type.join(', ')}`);
+            if (activeFilters.usecase.length) activeReqs.push(`Purpose: ${activeFilters.usecase.join(', ')}`);
             
             printReqs.innerHTML = activeReqs.map(r => `<div style="background: #f8faf9; border: 1px solid #e5e7eb; padding: 4px 10px; border-radius: 999px;"><strong>${r.split(':')[0]}</strong>: ${r.split(':')[1]}</div>`).join('') || '<div>No specific filters applied.</div>';
 
