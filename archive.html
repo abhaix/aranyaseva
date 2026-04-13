@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Botanical Archive | ARANYA SEVA</title>
+    <meta name="description" content="Explore India's largest database of 2,500+ plant species curated for soil restoration, timber, and ecological balance." />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "brand": "#01261f",
+                        "brand-light": "#1a3c34",
+                        "brand-surface": "#f8faf9",
+                        "accent": "#44ddc2",
+                        "accent-bright": "#68fade",
+                    },
+                    fontFamily: {
+                        headline: ['"Noto Serif"', 'serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                        label: ['"Space Grotesk"', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        /* Base */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            margin: 0; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            background-color: #01261f; /* Dark background for archive */
+        }
+
+        /* Material icons */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Mobile menu overlay */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(1, 38, 31, 0.97);
+            backdrop-filter: blur(24px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .mobile-menu.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-menu a {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.75rem;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .mobile-menu a:hover { color: #44ddc2; }
+
+        /* Hamburger */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 110;
+            padding: 8px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* CTA button */
+        .btn-primary {
+            background: linear-gradient(135deg, #44ddc2 0%, #20b096 100%);
+            color: #01261f;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(68, 221, 194, 0.3);
+        }
+
+        /* Plant card */
+        .plant-card {
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .plant-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(68, 221, 194, 0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        /* Selection Chips */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .chip-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background-color: transparent;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.75rem;
+            font-family: 'Space Grotesk', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chip-btn:hover {
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
+        }
+        .chip-btn.selected {
+            background-color: #44ddc2;
+            border-color: #44ddc2;
+            color: #01261f;
+            font-weight: bold;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #01261f; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #44ddc2; }
+    </style>
+</head>
+
+<body class="text-stone-300 font-body relative min-h-screen">
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+    <!-- ====== HEADER / NAV ====== -->
+    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500 glass-panel" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
+            <!-- Logo -->
+            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-white z-[110] relative no-underline">
+                ARANYA SEVA
+            </a>
+
+            <!-- Desktop nav -->
+            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight text-white/70">
+                <a class="hover:text-accent transition-colors duration-300" href="/#pillars">Methodologies</a>
+                <a class="hover:text-accent transition-colors duration-300" href="/#assessment">Our Process</a>
+                <a class="hover:text-accent transition-colors duration-300" href="/#tiers">Engagement Models</a>
+                <a class="hover:text-accent transition-colors duration-300" href="proposal">Proposals</a>
+                <a class="hover:text-accent transition-colors duration-300" href="estimator">Estimator</a>
+                <a class="hover:text-accent transition-colors duration-300" href="impact">Impact</a>
+                <a class="text-accent border-b-2 border-accent pb-0.5" href="archive">Archive</a>
+            </div>
+
+            <!-- CTA + Hamburger -->
+            <div class="flex items-center gap-4">
+                <button class="btn-primary hidden sm:block px-7 py-2.5 rounded text-sm tracking-wide">
+                    Consultation
+                </button>
+                <div class="hamburger lg:hidden" id="hamburger-btn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="/#pillars" onclick="closeMobileMenu()">Methodologies</a>
+        <a href="/#assessment" onclick="closeMobileMenu()">Our Process</a>
+        <a href="/#tiers" onclick="closeMobileMenu()">Engagement Models</a>
+        <a href="proposal" onclick="closeMobileMenu()">Proposals</a>
+        <a href="estimator" onclick="closeMobileMenu()">Estimator</a>
+        <a href="impact" onclick="closeMobileMenu()">Impact</a>
+        <a href="archive" onclick="closeMobileMenu()">Archive</a>
+        <button class="btn-primary px-10 py-3 rounded text-base mt-4" onclick="closeMobileMenu()">Consultation</button>
+    </div>
+
+    <main class="pt-32 sm:pt-40 relative z-10 px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto pb-24">
+        
+        <!-- Hero Title -->
+        <div class="mb-12 sm:mb-16 text-center max-w-3xl mx-auto animate-fade-up">
+            <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl text-white font-bold leading-tight mb-4 tracking-tight">Botanical Archive</h1>
+            <p class="font-body text-lg text-white/50">Explore over 2,500 highly curated native and naturalized species critical to ecological restoration and high-yield agroforestry.</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 mb-12 animate-fade-in delay-200">
+            <div class="flex flex-col md:flex-row gap-6 items-start md:items-end">
+                <div class="w-full md:flex-1">
+                    <label class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-3 block">Search by Name</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-lg">search</span>
+                        <input id="filter-search" type="text" placeholder="e.g. Red Sanders, Neem..."
+                               class="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-3 font-body text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all animate-fade-in" />
+                    </div>
+                </div>
+                <div>
+                    <label class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-3 block">Quick Filters</label>
+                    <div class="chip-group" id="quick-filters">
+                        <button class="chip-btn selected" data-filter="all">All Species</button>
+                        <button class="chip-btn" data-filter="medicinal">Ayurvedic / Medicinal</button>
+                        <button class="chip-btn" data-filter="timber">Commercial Timber</button>
+                        <button class="chip-btn" data-filter="rare">Rare / Endangered</button>
+                        <button class="chip-btn" data-filter="oxygen">High Carbon Sync</button>
+                    </div>
+                </div>
+                <div class="text-right flex-shrink-0 min-w-[120px] pb-2">
+                    <p class="font-label text-[10px] uppercase text-white/40 mb-1">Catalog Size</p>
+                    <p class="font-headline text-2xl text-accent-bright leading-none" id="result-count">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="skeleton h-[350px]"></div>
+            <div class="skeleton h-[350px]"></div>
+            <div class="skeleton h-[350px]"></div>
+            <div class="skeleton h-[350px]"></div>
+        </div>
+
+        <!-- Grid -->
+        <div id="plant-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" style="display:none;">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Load More -->
+        <div id="load-more-container" class="hidden text-center mt-12">
+            <button id="btn-load-more" class="inline-flex items-center gap-2 px-8 py-3 rounded-lg border border-white/20 text-white/70 hover:border-accent hover:text-accent transition-all duration-300 font-label text-xs uppercase tracking-wider">
+                <span class="material-symbols-outlined text-sm">expand_more</span>
+                Load More Archives
+            </button>
+        </div>
+
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="w-full border-t border-white/10 glass-panel relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-6 sm:px-10 lg:px-16 py-12 sm:py-16 max-w-[1440px] mx-auto">
+            <div class="flex flex-col justify-between gap-8">
+                <div>
+                    <h2 class="font-headline text-sm font-bold tracking-widest text-white/90 mb-4 uppercase">ARANYA SEVA</h2>
+                    <p class="font-label text-white/40 text-[11px] leading-relaxed max-w-sm uppercase tracking-wide">
+                        Regenerative Biological Data Systems. Engineering the future of land assets.
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col md:items-end justify-between gap-8">
+                <div class="font-label text-[10px] uppercase tracking-[0.15em] text-white/40">
+                    GPS: 12.9716° N, 77.5946° E
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Mobile Menu ---
+        const hamburger = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        function closeMobileMenu() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // --- Data Handling ---
+        let allPlants = [];
+        let filteredPlants = [];
+        let displayedCount = 0;
+        const PAGE_SIZE = 40;
+        let activeFilter = 'all';
+
+        const plantGrid = document.getElementById('plant-grid');
+        const loadingState = document.getElementById('loading-state');
+        const resultCount = document.getElementById('result-count');
+        const searchInput = document.getElementById('filter-search');
+        const loadMoreBtn = document.getElementById('btn-load-more');
+        const loadMoreContainer = document.getElementById('load-more-container');
+
+        Papa.parse('India_Plant_Database_Cleaned(India Plant Database).csv', {
+            download: true,
+            header: false,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const rows = results.data;
+                for (let i = 2; i < rows.length; i++) {
+                    const r = rows[i];
+                    if (!r[1] || r[1].trim() === '') continue;
+
+                    allPlants.push({
+                        id: r[0] || '',
+                        name: r[1] || '',
+                        scientific: r[2] || '',
+                        family: r[3] || '',
+                        otherNames: r[4] || '',
+                        plantType: r[5] || '',
+                        region: r[17] || '',
+                        oxygenProd: r[22] || '',
+                        co2Absorb: r[23] || '',
+                        useCases: r[45] || '',
+                        availability: r[36] || '',
+                        description: r[43] || '',
+                        benefits: r[44] || '',
+                    });
+                }
+                applyFilters();
+                loadingState.style.display = 'none';
+                plantGrid.style.display = 'grid';
+            }
+        });
+
+        function applyFilters() {
+            const query = searchInput.value.toLowerCase().trim();
+
+            filteredPlants = allPlants.filter(p => {
+                // Search match
+                if (query) {
+                    const match = [p.name, p.scientific, p.otherNames, p.family].join(' ').toLowerCase();
+                    if (!match.includes(query)) return false;
+                }
+
+                // Quick Filter match
+                if (activeFilter === 'medicinal') {
+                    if (!p.useCases.includes('Medicinal') && !p.description.includes('Ayurveda')) return false;
+                } else if (activeFilter === 'timber') {
+                    if (!p.useCases.includes('Commercial') && !p.useCases.includes('Timber')) return false;
+                } else if (activeFilter === 'rare') {
+                    if (!p.availability.includes('Rare')) return false;
+                } else if (activeFilter === 'oxygen') {
+                    if (!p.useCases.includes('Carbon') && !p.useCases.includes('Environmental')) return false;
+                }
+
+                return true;
+            });
+
+            resultCount.textContent = filteredPlants.length.toLocaleString();
+            displayedCount = 0;
+            plantGrid.innerHTML = '';
+            renderNextPage();
+        }
+
+        function renderNextPage() {
+            const end = Math.min(displayedCount + PAGE_SIZE, filteredPlants.length);
+            
+            for (let i = displayedCount; i < end; i++) {
+                const p = filteredPlants[i];
+                const card = document.createElement('div');
+                card.className = 'glass-panel rounded-2xl overflow-hidden plant-card flex flex-col p-6';
+                card.style.animationDelay = `${(i - displayedCount) * 0.03}s`;
+
+                // Calculate numeric average for O2/CO2 if it's a range like "16.9 - 33.9 kg/yr"
+                const getAvg = (str) => {
+                    const matches = str.match(/[\d.]+/g);
+                    if (!matches) return 'N/A';
+                    if (matches.length > 1) return ((parseFloat(matches[0]) + parseFloat(matches[1])) / 2).toFixed(1) + 'kg';
+                    return parseFloat(matches[0]).toFixed(1) + 'kg';
+                };
+
+                const o2 = getAvg(p.oxygenProd);
+                const co2 = getAvg(p.co2Absorb);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-white/10 text-white/80 font-label text-[9px] uppercase tracking-wider px-2 py-1 rounded">
+                            ${p.id}
+                        </span>
+                        ${p.availability.includes('Rare') ? '<span class="text-xs bg-red-500/20 text-red-300 font-label px-2 py-1 flex items-center gap-1 rounded"><span class="material-symbols-outlined text-[12px]">warning</span> Rare</span>' : ''}
+                    </div>
+                    
+                    <h3 class="font-headline text-xl text-white mb-1 leading-tight">${p.name}</h3>
+                    <p class="font-label text-xs text-accent italic mb-4">${p.scientific}</p>
+
+                    <p class="font-body text-sm text-white/50 leading-relaxed mb-6 flex-1 line-clamp-3">
+                        ${p.description || p.benefits}
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-px bg-white/10 rounded overflow-hidden mt-auto">
+                        <div class="p-3 bg-brand/50">
+                            <span class="block text-[9px] font-label text-white/40 uppercase mb-1 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">air</span> Avg <span class="text-white/80 font-bold">O₂</span>/yr
+                            </span>
+                            <span class="font-body font-bold text-accent-bright">${o2}</span>
+                        </div>
+                        <div class="p-3 bg-brand/50">
+                            <span class="block text-[9px] font-label text-white/40 uppercase mb-1 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">public</span> Absorb <span class="text-white/80 font-bold">CO₂</span>
+                            </span>
+                            <span class="font-body font-bold text-accent-bright">${co2}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/10 flex flex-wrap gap-2">
+                        <span class="text-[10px] font-label text-white/40 uppercase">Family: <span class="text-white/80">${p.family || 'Unknown'}</span></span>
+                        <span class="text-white/20 mx-1">•</span>
+                        <span class="text-[10px] font-label text-white/40 uppercase">Type: <span class="text-white/80">${p.plantType}</span></span>
+                    </div>
+                `;
+                plantGrid.appendChild(card);
+            }
+
+            displayedCount = end;
+            if (displayedCount < filteredPlants.length) {
+                loadMoreContainer.classList.remove('hidden');
+            } else {
+                loadMoreContainer.classList.add('hidden');
+            }
+        }
+
+        // Search Timeout
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(applyFilters, 300);
+        });
+
+        // Quick Filters
+        document.querySelectorAll('#quick-filters .chip-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#quick-filters .chip-btn').forEach(b => b.classList.remove('selected'));
+                e.target.classList.add('selected');
+                activeFilter = e.target.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        // Load More
+        loadMoreBtn.addEventListener('click', renderNextPage);
+
+    </script>
+</body>
+</html>
