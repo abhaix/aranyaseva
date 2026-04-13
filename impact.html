@@ -204,7 +204,7 @@
             <!-- DASHBOARD OUTPUT -->
             <div class="lg:col-span-8 space-y-8 animate-fade-up delay-200">
                 <!-- Top KPI Row -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div class="glass-panel p-6 rounded-2xl border-t-4 border-emerald-400">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="material-symbols-outlined text-emerald-400 text-sm">public</span>
@@ -215,6 +215,16 @@
                         <p class="text-[10px] text-white/30 mt-3 font-body">Equivalent to <span id="out-cars" class="text-white/60">0</span> cars off the road.</p>
                     </div>
                     
+                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-amber-400">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-amber-400 text-sm">energy_savings_leaf</span>
+                            <span class="font-label text-[10px] uppercase tracking-wider text-white/50">Carbon Credits</span>
+                        </div>
+                        <div class="font-headline text-3xl sm:text-4xl text-white" id="out-credits">0</div>
+                        <div class="font-label text-xs text-amber-400/80 mt-1">Verified Emission Reductions</div>
+                        <p class="text-[10px] text-white/30 mt-3 font-body">Est. Revenue: <span id="out-credit-val" class="text-white/60">₹0</span> / yr.</p>
+                    </div>
+
                     <div class="glass-panel p-6 rounded-2xl border-t-4 border-sky-400">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="material-symbols-outlined text-sky-400 text-sm">air</span>
@@ -284,6 +294,8 @@
         const outO2 = document.getElementById('out-o2');
         const outPeople = document.getElementById('out-people');
         const outValue = document.getElementById('out-value');
+        const outCredits = document.getElementById('out-credits');
+        const outCreditVal = document.getElementById('out-credit-val');
 
         // Chart Init
         const ctx = document.getElementById('impactChart').getContext('2d');
@@ -306,6 +318,16 @@
                     borderColor: 'rgb(68, 221, 194)',
                     borderWidth: 2,
                     borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Carbon Revenue (Lakhs)',
+                    data: [0, 0, 0, 0, 0, 0],
+                    borderColor: 'rgb(245, 158, 11)',
+                    borderWidth: 2,
+                    borderDash: [2, 2],
                     fill: false,
                     tension: 0.4,
                     yAxisID: 'y1'
@@ -332,7 +354,7 @@
                     y1: {
                         type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false },
                         ticks: { color: 'rgba(255,255,255,0.5)' },
-                        title: { display: true, text: 'Value (Cr)', color: 'rgba(255,255,255,0.5)' }
+                        title: { display: true, text: 'Value (Cr/L)', color: 'rgba(255,255,255,0.5)' }
                     }
                 }
             }
@@ -355,16 +377,23 @@
             
             // 1 Cr = 10,000,000. valueYrAcre is rough projected yield per acre at yr 10.
             const totalValueCr = (acres * pData.valueYrAcre) / 10000000;
+            
+            // 1 Credit = 1 Ton of CO2
+            const annualCredits = Math.floor(annualCo2Tons);
+            // Assume 1650 INR per credit
+            const creditValue = annualCredits * 1650;
 
             outCo2.textContent = annualCo2Tons.toLocaleString(undefined, {maximumFractionDigits: 1});
             outO2.textContent = annualO2Tons.toLocaleString(undefined, {maximumFractionDigits: 1});
             outValue.textContent = '₹' + totalValueCr.toLocaleString(undefined, {maximumFractionDigits: 2});
+            outCredits.textContent = annualCredits.toLocaleString();
+            outCreditVal.textContent = '₹' + creditValue.toLocaleString();
             
             outCars.textContent = Math.round(annualCo2Tons / 4.6).toLocaleString(); // avg car emits 4.6 tons
             outPeople.textContent = Math.round((annualO2Tons * 1000) / 270).toLocaleString(); // human needs 270kg O2/yr
 
             // Pulse effects
-            [outCo2, outO2, outValue].forEach(triggerPulse);
+            [outCo2, outO2, outValue, outCredits].forEach(triggerPulse);
 
             // Update Chart Data (Biomass compounds over time, S-Curve roughly)
             const growthCurve = [0, 0.1, 0.4, 0.7, 0.9, 1.0];
@@ -372,6 +401,10 @@
             
             impactChart.data.datasets[0].data = growthCurve.map(multiplier => max25Co2 * multiplier);
             impactChart.data.datasets[1].data = growthCurve.map(multiplier => (totalValueCr * 2.5) * multiplier); // Year 25 value vs Y10
+            
+            const max25CreditValue = (creditValue / 100000) * 25; // in Lakhs
+            const creditCurve = [0, 0.2, 0.4, 0.6, 0.8, 1.0]; // Linear
+            impactChart.data.datasets[2].data = creditCurve.map(multiplier => max25CreditValue * multiplier);
             
             // Update chart colors based on pack
             impactChart.data.datasets[0].borderColor = pData.color;
