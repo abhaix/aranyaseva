@@ -177,10 +177,16 @@
             
             <div class="lg:col-span-4 space-y-8 animate-fade-up delay-100">
                 <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
-                    <h3 class="font-headline text-2xl text-brand mb-6">Land Parameters</h3>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-headline text-2xl text-brand">Parameters</h3>
+                        <div class="flex bg-stone-100 p-1 rounded-lg border border-stone-200">
+                            <button id="btn-mode-acres" class="px-3 py-1.5 text-[10px] font-label uppercase tracking-wider rounded-md transition-all duration-300 bg-white text-brand shadow-sm font-bold">Acres</button>
+                            <button id="btn-mode-trees" class="px-3 py-1.5 text-[10px] font-label uppercase tracking-wider rounded-md transition-all duration-300 text-stone-400 hover:text-stone-600">Trees</button>
+                        </div>
+                    </div>
                     
                     <!-- Area slider -->
-                    <div class="mb-8">
+                    <div id="section-acres" class="mb-8">
                         <div class="flex justify-between items-end mb-4">
                             <label class="font-label text-xs uppercase tracking-widest text-stone-400">Total Area Active</label>
                             <span class="font-headline text-3xl text-brand"><span id="val-acres">50</span> <span class="text-base text-stone-400 font-body">Acres</span></span>
@@ -189,6 +195,19 @@
                         <div class="flex justify-between text-[10px] font-label text-stone-300 mt-2">
                             <span>5 Acres</span>
                             <span>500 Acres</span>
+                        </div>
+                    </div>
+
+                    <!-- Tree Count slider (Hidden by default) -->
+                    <div id="section-trees" class="mb-8 hidden">
+                        <div class="flex justify-between items-end mb-4">
+                            <label class="font-label text-xs uppercase tracking-widest text-stone-400">Total Tree Count</label>
+                            <span class="font-headline text-3xl text-brand"><span id="val-trees">22,500</span></span>
+                        </div>
+                        <input type="range" id="slider-trees" min="1000" max="250000" value="22500" step="500">
+                        <div class="flex justify-between text-[10px] font-label text-stone-300 mt-2">
+                            <span>1,000</span>
+                            <span>250,000</span>
                         </div>
                     </div>
 
@@ -324,7 +343,9 @@
         function closeMobileMenu() { hamburger.classList.remove('active'); mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }
 
         // State & Config
+        let calcMode = 'acres'; // 'acres' or 'trees'
         let acres = 50;
+        let treeCount = 22500;
         let density = 450;
         let pack = 'timber';
 
@@ -336,8 +357,16 @@
         };
 
         // DOM elements
+        const btnModeAcres = document.getElementById('btn-mode-acres');
+        const btnModeTrees = document.getElementById('btn-mode-trees');
+        const sectionAcres = document.getElementById('section-acres');
+        const sectionTrees = document.getElementById('section-trees');
+
         const sliderAcres = document.getElementById('slider-acres');
+        const sliderTrees = document.getElementById('slider-trees');
         const valAcres = document.getElementById('val-acres');
+        const valTrees = document.getElementById('val-trees');
+
         const outCo2 = document.getElementById('out-co2');
         const outCars = document.getElementById('out-cars');
         const outO2 = document.getElementById('out-o2');
@@ -417,7 +446,17 @@
         }
 
         function calculateImpact() {
-            const totalTrees = acres * density;
+            let totalTrees;
+            let displayAcres;
+
+            if (calcMode === 'acres') {
+                totalTrees = acres * density;
+                displayAcres = acres;
+            } else {
+                totalTrees = treeCount;
+                displayAcres = treeCount / density;
+            }
+
             const pData = packs[pack];
             
             // Outputs
@@ -425,7 +464,7 @@
             const annualO2Tons = (totalTrees * pData.o2kg) / 1000;
             
             // 1 Cr = 10,000,000. valueYrAcre is rough projected yield per acre at yr 10.
-            const totalValueCr = (acres * pData.valueYrAcre) / 10000000;
+            const totalValueCr = (displayAcres * pData.valueYrAcre) / 10000000;
             
             // 1 Credit = 1 Ton of CO2
             const annualCredits = Math.floor(annualCo2Tons);
@@ -463,9 +502,41 @@
         }
 
         // Event Listeners
+        btnModeAcres.addEventListener('click', () => {
+            calcMode = 'acres';
+            btnModeAcres.className = "px-3 py-1.5 text-[10px] font-label uppercase tracking-wider rounded-md transition-all duration-300 bg-white text-brand shadow-sm font-bold";
+            btnModeTrees.className = "px-3 py-1.5 text-[10px] font-label uppercase tracking-wider rounded-md transition-all duration-300 text-stone-400 hover:text-stone-600";
+            sectionAcres.classList.remove('hidden');
+            sectionTrees.classList.add('hidden');
+            calculateImpact();
+        });
+
+        btnModeTrees.addEventListener('click', () => {
+            calcMode = 'trees';
+            btnModeTrees.className = "px-3 py-1.5 text-[10px] font-label uppercase tracking-wider rounded-md transition-all duration-300 bg-white text-brand shadow-sm font-bold";
+            btnModeAcres.className = "px-3 py-1.5 text-[10px] font-label uppercase tracking-wider rounded-md transition-all duration-300 text-stone-400 hover:text-stone-600";
+            sectionTrees.classList.remove('hidden');
+            sectionAcres.classList.add('hidden');
+            calculateImpact();
+        });
+
         sliderAcres.addEventListener('input', (e) => {
             acres = parseInt(e.target.value);
             valAcres.textContent = acres;
+            // Update tree treeCount to keep them in sync if we switch back
+            treeCount = acres * density;
+            valTrees.textContent = treeCount.toLocaleString();
+            sliderTrees.value = treeCount;
+            calculateImpact();
+        });
+
+        sliderTrees.addEventListener('input', (e) => {
+            treeCount = parseInt(e.target.value);
+            valTrees.textContent = treeCount.toLocaleString();
+            // Update acres to keep them in sync
+            acres = Math.round(treeCount / density);
+            valAcres.textContent = acres;
+            sliderAcres.value = acres;
             calculateImpact();
         });
 
@@ -474,6 +545,19 @@
                 document.querySelectorAll('.strategy-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 density = parseInt(e.target.dataset.density);
+                
+                // If in tree mode, we keep trees constant and update acres. 
+                // If in acres mode, we keep acres constant and update trees.
+                if (calcMode === 'trees') {
+                    acres = Math.round(treeCount / density);
+                    valAcres.textContent = acres;
+                    sliderAcres.value = acres;
+                } else {
+                    treeCount = acres * density;
+                    valTrees.textContent = treeCount.toLocaleString();
+                    sliderTrees.value = treeCount;
+                }
+                
                 calculateImpact();
             });
         });
