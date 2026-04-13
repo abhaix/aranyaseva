@@ -44,12 +44,7 @@
         /* Base */
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
-            margin: 0; 
-            -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
-            background-color: #01261f; /* Dark background for archive */
+            background-color: #f8faf9; /* Light background for archive */
         }
 
         /* Material icons */
@@ -58,10 +53,10 @@
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         /* Animations */
@@ -116,7 +111,6 @@
         }
         .mobile-menu a:hover { color: #44ddc2; }
 
-        /* Hamburger */
         .hamburger {
             display: flex;
             flex-direction: column;
@@ -129,24 +123,26 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #fff;
+            background: #01261f;
             transition: all 0.3s ease;
             border-radius: 2px;
         }
         .hamburger.active span:nth-child(1) {
             transform: rotate(45deg) translate(5px, 5px);
+            background: #fff;
         }
         .hamburger.active span:nth-child(2) {
             opacity: 0;
         }
         .hamburger.active span:nth-child(3) {
             transform: rotate(-45deg) translate(5px, -5px);
+            background: #fff;
         }
 
         /* CTA button */
         .btn-primary {
-            background: linear-gradient(135deg, #44ddc2 0%, #20b096 100%);
-            color: #01261f;
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 100%);
+            color: #fff;
             font-weight: 700;
             border: none;
             cursor: pointer;
@@ -156,25 +152,26 @@
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(68, 221, 194, 0.3);
+            box-shadow: 0 12px 40px rgba(1, 38, 31, 0.3);
         }
 
         /* Plant card */
         .plant-card {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
             animation: fadeInUp 0.5s ease-out forwards;
             opacity: 0;
         }
         .plant-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(68, 221, 194, 0.4);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(1, 38, 31, 0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06);
         }
 
         /* Skeleton */
         .skeleton {
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+            background: linear-gradient(90deg, #f0f2f1 25%, #e1e4e2 50%, #f0f2f1 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 8px;
@@ -189,9 +186,9 @@
         .chip-btn {
             padding: 0.4rem 1rem;
             border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background-color: transparent;
-            color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(1, 38, 31, 0.1);
+            background-color: #fff;
+            color: rgba(1, 38, 31, 0.6);
             font-size: 0.75rem;
             font-family: 'Space Grotesk', monospace;
             text-transform: uppercase;
@@ -200,46 +197,46 @@
             transition: all 0.2s ease;
         }
         .chip-btn:hover {
-            border-color: rgba(255,255,255,0.5);
-            color: #fff;
+            border-color: rgba(1, 38, 31, 0.3);
+            color: #01261f;
         }
         .chip-btn.selected {
-            background-color: #44ddc2;
-            border-color: #44ddc2;
-            color: #01261f;
+            background-color: #01261f;
+            border-color: #01261f;
+            color: #fff;
             font-weight: bold;
         }
 
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #01261f; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #44ddc2; }
+        ::-webkit-scrollbar-track { background: #f8faf9; }
+        ::-webkit-scrollbar-thumb { background: #c1c8c4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #01261f; }
     </style>
 </head>
 
-<body class="text-stone-300 font-body relative min-h-screen">
+<body class="bg-brand-surface text-stone-800 font-body relative min-h-screen">
 
     <!-- Background Pattern -->
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, #01261f 1px, transparent 1px); background-size: 40px 40px;"></div>
 
     <!-- ====== HEADER / NAV ====== -->
-    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500 glass-panel" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500">
         <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
             <!-- Logo -->
-            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-white z-[110] relative no-underline">
+            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative no-underline">
                 ARANYA SEVA
             </a>
 
             <!-- Desktop nav -->
-            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight text-white/70">
-                <a class="hover:text-accent transition-colors duration-300" href="/#pillars">Methodologies</a>
-                <a class="hover:text-accent transition-colors duration-300" href="/#assessment">Our Process</a>
-                <a class="hover:text-accent transition-colors duration-300" href="/#tiers">Engagement Models</a>
-                <a class="hover:text-accent transition-colors duration-300" href="proposal">Proposals</a>
-                <a class="hover:text-accent transition-colors duration-300" href="estimator">Estimator</a>
-                <a class="hover:text-accent transition-colors duration-300" href="impact">Impact</a>
-                <a class="text-accent border-b-2 border-accent pb-0.5" href="archive">Archive</a>
+            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight text-stone-500">
+                <a class="hover:text-brand transition-colors duration-300" href="/#pillars">Methodologies</a>
+                <a class="hover:text-brand transition-colors duration-300" href="/#assessment">Our Process</a>
+                <a class="hover:text-brand transition-colors duration-300" href="/#tiers">Engagement Models</a>
+                <a class="hover:text-brand transition-colors duration-300" href="proposal">Proposals</a>
+                <a class="hover:text-brand transition-colors duration-300" href="estimator">Estimator</a>
+                <a class="hover:text-brand transition-colors duration-300" href="impact">Impact</a>
+                <a class="text-brand border-b-2 border-brand pb-0.5" href="archive">Archive</a>
             </div>
 
             <!-- CTA + Hamburger -->
@@ -252,6 +249,7 @@
                 </div>
             </div>
         </nav>
+        <div class="w-full h-px bg-stone-200/60"></div>
     </header>
 
     <!-- Mobile Menu -->
@@ -270,23 +268,23 @@
         
         <!-- Hero Title -->
         <div class="mb-12 sm:mb-16 text-center max-w-3xl mx-auto animate-fade-up">
-            <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl text-white font-bold leading-tight mb-4 tracking-tight">Botanical Archive</h1>
-            <p class="font-body text-lg text-white/50">Explore over 2,500 highly curated native and naturalized species critical to ecological restoration and high-yield agroforestry.</p>
+            <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl text-brand font-bold leading-tight mb-4 tracking-tight">Botanical Archive</h1>
+            <p class="font-body text-lg text-stone-500">Explore over 2,500 highly curated native and naturalized species critical to ecological restoration and high-yield agroforestry.</p>
         </div>
 
         <!-- Filters -->
-        <div class="glass-panel rounded-2xl p-6 sm:p-8 mb-12 animate-fade-in delay-200">
+        <div class="bg-white rounded-2xl p-6 sm:p-8 mb-12 border border-stone-200 shadow-sm animate-fade-in delay-200">
             <div class="flex flex-col md:flex-row gap-6 items-start md:items-end">
                 <div class="w-full md:flex-1">
-                    <label class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-3 block">Search by Name</label>
+                    <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Search by Name</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-lg">search</span>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-lg">search</span>
                         <input id="filter-search" type="text" placeholder="e.g. Red Sanders, Neem..."
-                               class="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-3 font-body text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all animate-fade-in" />
+                               class="w-full bg-stone-50 border border-stone-200 rounded-lg pl-10 pr-4 py-3 font-body text-sm text-brand placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-brand/10 focus:border-brand transition-all animate-fade-in" />
                     </div>
                 </div>
                 <div>
-                    <label class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-3 block">Quick Filters</label>
+                    <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Quick Filters</label>
                     <div class="chip-group" id="quick-filters">
                         <button class="chip-btn selected" data-filter="all">All Species</button>
                         <button class="chip-btn" data-filter="medicinal">Ayurvedic / Medicinal</button>
@@ -296,8 +294,8 @@
                     </div>
                 </div>
                 <div class="text-right flex-shrink-0 min-w-[120px] pb-2">
-                    <p class="font-label text-[10px] uppercase text-white/40 mb-1">Catalog Size</p>
-                    <p class="font-headline text-2xl text-accent-bright leading-none" id="result-count">0</p>
+                    <p class="font-label text-[10px] uppercase text-stone-400 mb-1">Catalog Size</p>
+                    <p class="font-headline text-2xl text-brand leading-none" id="result-count">0</p>
                 </div>
             </div>
         </div>
@@ -317,7 +315,7 @@
 
         <!-- Load More -->
         <div id="load-more-container" class="hidden text-center mt-12">
-            <button id="btn-load-more" class="inline-flex items-center gap-2 px-8 py-3 rounded-lg border border-white/20 text-white/70 hover:border-accent hover:text-accent transition-all duration-300 font-label text-xs uppercase tracking-wider">
+            <button id="btn-load-more" class="inline-flex items-center gap-2 px-8 py-3 rounded-lg border border-stone-200 text-stone-500 hover:border-brand hover:text-brand transition-all duration-300 font-label text-xs uppercase tracking-wider bg-white">
                 <span class="material-symbols-outlined text-sm">expand_more</span>
                 Load More Archives
             </button>
@@ -326,18 +324,27 @@
     </main>
 
     <!-- ====== FOOTER ====== -->
-    <footer class="w-full border-t border-white/10 glass-panel relative z-10">
+    <footer class="w-full border-t border-stone-200/50 bg-stone-100">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-6 sm:px-10 lg:px-16 py-12 sm:py-16 max-w-[1440px] mx-auto">
             <div class="flex flex-col justify-between gap-8">
                 <div>
-                    <h2 class="font-headline text-sm font-bold tracking-widest text-white/90 mb-4 uppercase">ARANYA SEVA</h2>
-                    <p class="font-label text-white/40 text-[11px] leading-relaxed max-w-sm uppercase tracking-wide">
-                        Regenerative Biological Data Systems. Engineering the future of land assets.
+                    <h2 class="font-headline text-sm font-bold tracking-widest text-brand mb-4 uppercase">ARANYA SEVA</h2>
+                    <p class="font-label text-stone-500 text-[11px] leading-relaxed max-w-sm uppercase tracking-wide">
+                        Regenerative Biological Data Systems. Engineering the future of land assets through scientific rigor and ecological precision.
                     </p>
+                </div>
+                <div class="font-label text-brand text-[10px] uppercase tracking-[0.15em]">
+                    © 2024 Aranya Seva Biological Data Systems. All rights reserved.
                 </div>
             </div>
             <div class="flex flex-col md:items-end justify-between gap-8">
-                <div class="font-label text-[10px] uppercase tracking-[0.15em] text-white/40">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 md:text-right">
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="archive">Specimen Archive v2.0</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Flora Distribution Map</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Clinical Services</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Privacy & Encryption</a>
+                </div>
+                <div class="font-label text-[10px] uppercase tracking-[0.15em] text-stone-400">
                     GPS: 12.9716° N, 77.5946° E
                 </div>
             </div>
@@ -459,37 +466,37 @@
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-4">
-                        <span class="bg-white/10 text-white/80 font-label text-[9px] uppercase tracking-wider px-2 py-1 rounded">
+                        <span class="bg-stone-100 text-stone-500 font-label text-[9px] uppercase tracking-wider px-2 py-1 rounded">
                             ${p.id}
                         </span>
-                        ${p.availability.includes('Rare') ? '<span class="text-xs bg-red-500/20 text-red-300 font-label px-2 py-1 flex items-center gap-1 rounded"><span class="material-symbols-outlined text-[12px]">warning</span> Rare</span>' : ''}
+                        ${p.availability.includes('Rare') ? '<span class="text-xs bg-red-50 text-red-600 font-label px-2 py-1 flex items-center gap-1 rounded border border-red-100"><span class="material-symbols-outlined text-[12px]">warning</span> Rare</span>' : ''}
                     </div>
                     
-                    <h3 class="font-headline text-xl text-white mb-1 leading-tight">${p.name}</h3>
-                    <p class="font-label text-xs text-accent italic mb-4">${p.scientific}</p>
+                    <h3 class="font-headline text-xl text-brand mb-1 leading-tight">${p.name}</h3>
+                    <p class="font-label text-xs text-stone-400 italic mb-4">${p.scientific}</p>
 
-                    <p class="font-body text-sm text-white/50 leading-relaxed mb-6 flex-1 line-clamp-3">
+                    <p class="font-body text-sm text-stone-500 leading-relaxed mb-6 flex-1 line-clamp-3">
                         ${p.description || p.benefits}
                     </p>
 
-                    <div class="grid grid-cols-2 gap-px bg-white/10 rounded overflow-hidden mt-auto">
-                        <div class="p-3 bg-brand/50">
-                            <span class="block text-[9px] font-label text-white/40 uppercase mb-1 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[12px]">air</span> Avg <span class="text-white/80 font-bold">O₂</span>/yr
+                    <div class="grid grid-cols-2 gap-px bg-stone-100 rounded overflow-hidden mt-auto border border-stone-100">
+                        <div class="p-3 bg-white">
+                            <span class="block text-[9px] font-label text-stone-400 uppercase mb-1 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">air</span> Avg <span class="text-brand font-bold">O₂</span>/yr
                             </span>
-                            <span class="font-body font-bold text-accent-bright">${o2}</span>
+                            <span class="font-body font-bold text-brand">${o2}</span>
                         </div>
-                        <div class="p-3 bg-brand/50">
-                            <span class="block text-[9px] font-label text-white/40 uppercase mb-1 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[12px]">public</span> Absorb <span class="text-white/80 font-bold">CO₂</span>
+                        <div class="p-3 bg-white">
+                            <span class="block text-[9px] font-label text-stone-400 uppercase mb-1 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">public</span> Absorb <span class="text-brand font-bold">CO₂</span>
                             </span>
-                            <span class="font-body font-bold text-accent-bright">${co2}</span>
+                            <span class="font-body font-bold text-brand">${co2}</span>
                         </div>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-white/10 flex flex-wrap gap-2">
-                        <span class="text-[10px] font-label text-white/40 uppercase">Family: <span class="text-white/80">${p.family || 'Unknown'}</span></span>
-                        <span class="text-white/20 mx-1">•</span>
-                        <span class="text-[10px] font-label text-white/40 uppercase">Type: <span class="text-white/80">${p.plantType}</span></span>
+                    <div class="mt-4 pt-4 border-t border-stone-100 flex flex-wrap gap-2">
+                        <span class="text-[10px] font-label text-stone-400 uppercase">Family: <span class="text-stone-600">${p.family || 'Unknown'}</span></span>
+                        <span class="text-stone-200 mx-1">•</span>
+                        <span class="text-[10px] font-label text-stone-400 uppercase">Type: <span class="text-stone-600">${p.plantType}</span></span>
                     </div>
                 `;
                 plantGrid.appendChild(card);
@@ -522,6 +529,18 @@
 
         // Load More
         loadMoreBtn.addEventListener('click', renderNextPage);
+
+        // --- Sticky Header Background ---
+        const header = document.getElementById('site-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                header.style.background = 'rgba(248, 250, 249, 0.95)';
+                header.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+            } else {
+                header.style.background = 'transparent';
+                header.style.boxShadow = 'none';
+            }
+        });
 
     </script>
 </body>

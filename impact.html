@@ -44,21 +44,27 @@
         /* Base */
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
-            margin: 0; 
-            -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
-            background-color: #01261f; /* Dark background */
+            background-color: #f8faf9; /* Light background */
         }
 
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24; }
+        /* Material icons */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom utilities */
+        .text-gradient {
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 60%, #2d5a4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         /* Animations */
@@ -80,53 +86,69 @@
         .mobile-menu a:hover { color: #44ddc2; }
 
         .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; z-index: 110; padding: 8px; }
-        .hamburger span { display: block; width: 24px; height: 2px; background: #fff; transition: all 0.3s ease; border-radius: 2px; }
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger span { display: block; width: 24px; height: 2px; background: #01261f; transition: all 0.3s ease; border-radius: 2px; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); background: #fff; }
         .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); background: #fff; }
 
-        .btn-primary { background: linear-gradient(135deg, #44ddc2 0%, #20b096 100%); color: #01261f; font-weight: 700; border: none; cursor: pointer; transition: all 0.4s ease; position: relative; overflow: hidden; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(68, 221, 194, 0.3); }
+        .btn-primary { 
+            background: linear-gradient(135deg, #01261f 0%, #1a3c34 100%); 
+            color: #fff; 
+            font-weight: 700; 
+            border: none; 
+            cursor: pointer; 
+            transition: all 0.4s ease; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(1, 38, 31, 0.3); }
 
         /* Range slider styling */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #44ddc2; cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px rgba(68,221,194,0.5); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #01261f; cursor: pointer; margin-top: -8px; box-shadow: 0 4px 12px rgba(1, 38, 31, 0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(1, 38, 31, 0.1); border-radius: 2px; }
         
-        .strategy-btn { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.6); transition: all 0.3s; }
-        .strategy-btn:hover { border-color: rgba(68,221,194,0.4); color: white; }
-        .strategy-btn.active { background: rgba(68,221,194,0.1); border-color: #44ddc2; color: #44ddc2; }
+        .strategy-btn { border: 1px solid rgba(1, 38, 31, 0.1); background: #fff; color: rgba(1, 38, 31, 0.6); transition: all 0.3s; }
+        .strategy-btn:hover { border-color: rgba(1, 38, 31, 0.4); color: #01261f; }
+        .strategy-btn.active { background: #01261f; border-color: #01261f; color: #fff; }
         
         /* Value update pulse animation */
-        @keyframes valuePulse { 0% { transform: scale(1); color: #fff; } 50% { transform: scale(1.05); color: #44ddc2; } 100% { transform: scale(1); color: #fff; } }
+        @keyframes valuePulse { 0% { transform: scale(1); color: #01261f; } 50% { transform: scale(1.05); color: #44ddc2; } 100% { transform: scale(1); color: #01261f; } }
         .pulse-update { animation: valuePulse 0.4s ease; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f8faf9; }
+        ::-webkit-scrollbar-thumb { background: #c1c8c4; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #01261f; }
     </style>
 </head>
 
-<body class="text-stone-300 font-body relative min-h-screen">
+<body class="bg-brand-surface text-stone-800 font-body relative min-h-screen">
 
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-[0.02]" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 80px 80px;"></div>
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, #01261f 1px, transparent 1px); background-size: 40px 40px;"></div>
 
     <!-- ====== HEADER / NAV ====== -->
-    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500 glass-panel" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500">
         <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
-            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-white z-[110] relative no-underline">
+            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative no-underline">
                 ARANYA SEVA
             </a>
-            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight text-white/70">
-                <a class="hover:text-accent transition-colors duration-300" href="/#pillars">Methodologies</a>
-                <a class="hover:text-accent transition-colors duration-300" href="/#assessment">Our Process</a>
-                <a class="hover:text-accent transition-colors duration-300" href="/#tiers">Engagement Models</a>
-                <a class="hover:text-accent transition-colors duration-300" href="proposal">Proposals</a>
-                <a class="hover:text-accent transition-colors duration-300" href="estimator">Estimator</a>
-                <a class="text-accent border-b-2 border-accent pb-0.5" href="impact">Impact</a>
-                <a class="hover:text-accent transition-colors duration-300" href="archive">Archive</a>
+            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight text-stone-500">
+                <a class="hover:text-brand transition-colors duration-300" href="/#pillars">Methodologies</a>
+                <a class="hover:text-brand transition-colors duration-300" href="/#assessment">Our Process</a>
+                <a class="hover:text-brand transition-colors duration-300" href="/#tiers">Engagement Models</a>
+                <a class="hover:text-brand transition-colors duration-300" href="proposal">Proposals</a>
+                <a class="hover:text-brand transition-colors duration-300" href="estimator">Estimator</a>
+                <a class="text-brand border-b-2 border-brand pb-0.5" href="impact">Impact</a>
+                <a class="hover:text-brand transition-colors duration-300" href="archive">Archive</a>
             </div>
             <div class="flex items-center gap-4">
                 <button class="btn-primary hidden sm:block px-7 py-2.5 rounded text-sm tracking-wide">Consultation</button>
                 <div class="hamburger lg:hidden" id="hamburger-btn" aria-label="Open menu"><span></span><span></span><span></span></div>
             </div>
         </nav>
+        <div class="w-full h-px bg-stone-200/60"></div>
     </header>
 
     <div class="mobile-menu" id="mobile-menu">
@@ -142,30 +164,29 @@
 
     <main class="pt-32 sm:pt-40 relative z-10 px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto pb-24">
         
-        <div class="mb-12 sm:mb-16 animate-fade-up border-b border-white/10 pb-8">
+        <div class="mb-12 sm:mb-16 animate-fade-up border-b border-stone-200 pb-8">
             <div class="flex items-center gap-3 mb-4">
-                <span class="material-symbols-outlined text-accent text-3xl">psychiatry</span>
-                <span class="font-label text-xs uppercase tracking-[0.3em] text-accent">Ecological Impact Calculator</span>
+                <span class="material-symbols-outlined text-brand text-3xl">psychiatry</span>
+                <span class="font-label text-xs uppercase tracking-[0.3em] text-stone-400">Ecological Impact Calculator</span>
             </div>
-            <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl text-white font-bold leading-tight mb-6 tracking-tight">Project ROI & Sustainability Dashboard</h1>
-            <p class="font-body text-lg text-white/50 max-w-3xl">Adjust inputs to calculate the projected 25-year ecological impact and asset valuation of your land using Aranya Seva methodologies.</p>
+            <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl text-brand font-bold leading-tight mb-6 tracking-tight">Project ROI & Sustainability Dashboard</h1>
+            <p class="font-body text-lg text-stone-500 max-w-3xl">Adjust inputs to calculate the projected 25-year ecological impact and asset valuation of your land using Aranya Seva methodologies.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
-            <!-- CONTROLS -->
             <div class="lg:col-span-4 space-y-8 animate-fade-up delay-100">
-                <div class="glass-panel p-6 sm:p-8 rounded-2xl">
-                    <h3 class="font-headline text-2xl text-white mb-6">Land Parameters</h3>
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <h3 class="font-headline text-2xl text-brand mb-6">Land Parameters</h3>
                     
                     <!-- Area slider -->
                     <div class="mb-8">
                         <div class="flex justify-between items-end mb-4">
-                            <label class="font-label text-xs uppercase tracking-widest text-white/50">Total Area Active</label>
-                            <span class="font-headline text-3xl text-accent"><span id="val-acres">50</span> <span class="text-base text-white/50 font-body">Acres</span></span>
+                            <label class="font-label text-xs uppercase tracking-widest text-stone-400">Total Area Active</label>
+                            <span class="font-headline text-3xl text-brand"><span id="val-acres">50</span> <span class="text-base text-stone-400 font-body">Acres</span></span>
                         </div>
                         <input type="range" id="slider-acres" min="5" max="500" value="50" step="5">
-                        <div class="flex justify-between text-[10px] font-label text-white/30 mt-2">
+                        <div class="flex justify-between text-[10px] font-label text-stone-300 mt-2">
                             <span>5 Acres</span>
                             <span>500 Acres</span>
                         </div>
@@ -173,7 +194,7 @@
 
                     <!-- Density config -->
                     <div class="mb-8">
-                        <label class="font-label text-xs uppercase tracking-widest text-white/50 block mb-4">Plantation Density (Trees/Acre)</label>
+                        <label class="font-label text-xs uppercase tracking-widest text-stone-400 block mb-4">Plantation Density (Trees/Acre)</label>
                         <div class="grid grid-cols-2 gap-3">
                             <button class="strategy-btn font-body text-sm py-3 rounded-lg" data-density="200">Standard (200)</button>
                             <button class="strategy-btn font-body text-sm py-3 rounded-lg active" data-density="450">High-Density (450)</button>
@@ -182,20 +203,20 @@
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 sm:p-8 rounded-2xl">
-                    <h3 class="font-headline text-2xl text-white mb-6">Strategy Pack</h3>
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <h3 class="font-headline text-2xl text-brand mb-6">Strategy Pack</h3>
                     <div class="space-y-3">
-                        <button class="strategy-pack-btn w-full text-left p-4 rounded-xl border border-white/10 hover:border-accent/50 transition-colors bg-white/5 active-pack" data-pack="timber">
-                            <h4 class="font-headline text-lg text-white mb-1"><span class="text-amber-500 mr-2">■</span>Commercial Timber</h4>
-                            <p class="font-body text-xs text-white/40">Optimized for high terminal value (Teak, Rosewood, Mahogany).</p>
+                        <button class="strategy-pack-btn w-full text-left p-4 rounded-xl border border-stone-100 hover:border-brand/50 transition-colors bg-stone-50 active-pack" data-pack="timber">
+                            <h4 class="font-headline text-lg text-brand mb-1"><span class="text-amber-500 mr-2">■</span>Commercial Timber</h4>
+                            <p class="font-body text-xs text-stone-400">Optimized for high terminal value (Teak, Rosewood, Mahogany).</p>
                         </button>
-                        <button class="strategy-pack-btn w-full text-left p-4 rounded-xl border border-white/10 hover:border-accent/50 transition-colors" data-pack="carbon">
-                            <h4 class="font-headline text-lg text-white mb-1"><span class="text-emerald-500 mr-2">■</span>Carbon Sync Hub</h4>
-                            <p class="font-body text-xs text-white/40">Optimized for maximal rapid CO2 sequestration and AQI improvement.</p>
+                        <button class="strategy-pack-btn w-full text-left p-4 rounded-xl border border-stone-100 hover:border-brand/50 transition-colors bg-stone-50" data-pack="carbon">
+                            <h4 class="font-headline text-lg text-brand mb-1"><span class="text-emerald-500 mr-2">■</span>Carbon Sync Hub</h4>
+                            <p class="font-body text-xs text-stone-400">Optimized for maximal rapid CO2 sequestration and AQI improvement.</p>
                         </button>
-                        <button class="strategy-pack-btn w-full text-left p-4 rounded-xl border border-white/10 hover:border-accent/50 transition-colors" data-pack="mixed">
-                            <h4 class="font-headline text-lg text-white mb-1"><span class="text-purple-500 mr-2">■</span>Mixed Agro-forestry</h4>
-                            <p class="font-body text-xs text-white/40">Balanced approach: Yielding short-term crops + long-term timber.</p>
+                        <button class="strategy-pack-btn w-full text-left p-4 rounded-xl border border-stone-100 hover:border-brand/50 transition-colors bg-stone-50" data-pack="mixed">
+                            <h4 class="font-headline text-lg text-brand mb-1"><span class="text-purple-500 mr-2">■</span>Mixed Agro-forestry</h4>
+                            <p class="font-body text-xs text-stone-400">Balanced approach: Yielding short-term crops + long-term timber.</p>
                         </button>
                     </div>
                 </div>
@@ -205,55 +226,55 @@
             <div class="lg:col-span-8 space-y-8 animate-fade-up delay-200">
                 <!-- Top KPI Row -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-emerald-400">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-100 border-t-4 border-t-emerald-400 shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-emerald-400 text-sm">public</span>
-                            <span class="font-label text-[10px] uppercase tracking-wider text-white/50">Annual CO₂ Captured</span>
+                            <span class="material-symbols-outlined text-emerald-500 text-sm">public</span>
+                            <span class="font-label text-[10px] uppercase tracking-wider text-stone-400">Annual CO₂ Captured</span>
                         </div>
-                        <div class="font-headline text-3xl sm:text-4xl text-white" id="out-co2">0</div>
-                        <div class="font-label text-xs text-emerald-400/80 mt-1">Metric Tons</div>
-                        <p class="text-[10px] text-white/30 mt-3 font-body">Equivalent to <span id="out-cars" class="text-white/60">0</span> cars off the road.</p>
+                        <div class="font-headline text-3xl sm:text-4xl text-brand" id="out-co2">0</div>
+                        <div class="font-label text-xs text-emerald-500/80 mt-1">Metric Tons</div>
+                        <p class="text-[10px] text-stone-400 mt-3 font-body">Equivalent to <span id="out-cars" class="text-brand font-bold">0</span> cars off the road.</p>
                     </div>
                     
-                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-amber-400">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-100 border-t-4 border-t-amber-400 shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-amber-400 text-sm">energy_savings_leaf</span>
-                            <span class="font-label text-[10px] uppercase tracking-wider text-white/50">Carbon Credits</span>
+                            <span class="material-symbols-outlined text-amber-500 text-sm">energy_savings_leaf</span>
+                            <span class="font-label text-[10px] uppercase tracking-wider text-stone-400">Carbon Credits</span>
                         </div>
-                        <div class="font-headline text-3xl sm:text-4xl text-white" id="out-credits">0</div>
-                        <div class="font-label text-xs text-amber-400/80 mt-1">Verified Emission Reductions</div>
-                        <p class="text-[10px] text-white/30 mt-3 font-body">Est. Revenue: <span id="out-credit-val" class="text-white/60">₹0</span> / yr.</p>
+                        <div class="font-headline text-3xl sm:text-4xl text-brand" id="out-credits">0</div>
+                        <div class="font-label text-xs text-amber-500/80 mt-1">Verified Emission Reductions</div>
+                        <p class="text-[10px] text-stone-400 mt-3 font-body">Est. Revenue: <span id="out-credit-val" class="text-brand font-bold">₹0</span> / yr.</p>
                     </div>
 
-                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-sky-400">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-100 border-t-4 border-t-sky-400 shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-sky-400 text-sm">air</span>
-                            <span class="font-label text-[10px] uppercase tracking-wider text-white/50">Annual O₂ Produced</span>
+                            <span class="material-symbols-outlined text-sky-500 text-sm">air</span>
+                            <span class="font-label text-[10px] uppercase tracking-wider text-stone-400">Annual O₂ Produced</span>
                         </div>
-                        <div class="font-headline text-3xl sm:text-4xl text-white" id="out-o2">0</div>
-                        <div class="font-label text-xs text-sky-400/80 mt-1">Metric Tons</div>
-                        <p class="text-[10px] text-white/30 mt-3 font-body">Supports <span id="out-people" class="text-white/60">0</span> humans breathing.</p>
+                        <div class="font-headline text-3xl sm:text-4xl text-brand" id="out-o2">0</div>
+                        <div class="font-label text-xs text-sky-500/80 mt-1">Metric Tons</div>
+                        <p class="text-[10px] text-stone-400 mt-3 font-body">Supports <span id="out-people" class="text-brand font-bold">0</span> humans breathing.</p>
                     </div>
 
-                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-accent">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-100 border-t-4 border-t-accent shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-accent text-sm">payments</span>
-                            <span class="font-label text-[10px] uppercase tracking-wider text-white/50">Est. 10Yr Asset Value</span>
+                            <span class="material-symbols-outlined text-brand text-sm">payments</span>
+                            <span class="font-label text-[10px] uppercase tracking-wider text-stone-400">Est. 10Yr Asset Value</span>
                         </div>
-                        <div class="font-headline text-3xl sm:text-4xl text-white" id="out-value">₹0</div>
-                        <div class="font-label text-xs text-accent/80 mt-1">INR (Crores)</div>
-                        <p class="text-[10px] text-white/30 mt-3 font-body">Excluding land appreciation.</p>
+                        <div class="font-headline text-3xl sm:text-4xl text-brand" id="out-value">₹0</div>
+                        <div class="font-label text-xs text-brand/80 mt-1">INR (Crores)</div>
+                        <p class="text-[10px] text-stone-400 mt-3 font-body">Excluding land appreciation.</p>
                     </div>
                 </div>
 
                 <!-- Main Chart -->
-                <div class="glass-panel p-6 sm:p-8 rounded-2xl">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
                     <div class="flex justify-between items-center mb-6">
                         <div>
-                            <h3 class="font-headline text-xl text-white">25-Year Trajectory Model</h3>
-                            <p class="font-body text-xs text-white/40 mt-1">Projected cumulative compounding of biomass and asset value.</p>
+                            <h3 class="font-headline text-xl text-brand">25-Year Trajectory Model</h3>
+                            <p class="font-body text-xs text-stone-400 mt-1">Projected cumulative compounding of biomass and asset value.</p>
                         </div>
-                        <div class="font-label text-[10px] tracking-widest text-accent uppercase bg-accent/10 px-3 py-1 rounded">
+                        <div class="font-label text-[10px] tracking-widest text-brand uppercase bg-stone-50 px-3 py-1 rounded border border-stone-100">
                             Live Model
                         </div>
                     </div>
@@ -266,6 +287,34 @@
         </div>
 
     </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="w-full border-t border-stone-200/50 bg-stone-100">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-6 sm:px-10 lg:px-16 py-12 sm:py-16 max-w-[1440px] mx-auto">
+            <div class="flex flex-col justify-between gap-8">
+                <div>
+                    <h2 class="font-headline text-sm font-bold tracking-widest text-brand mb-4 uppercase">ARANYA SEVA</h2>
+                    <p class="font-label text-stone-500 text-[11px] leading-relaxed max-w-sm uppercase tracking-wide">
+                        Regenerative Biological Data Systems. Engineering the future of land assets through scientific rigor and ecological precision.
+                    </p>
+                </div>
+                <div class="font-label text-brand text-[10px] uppercase tracking-[0.15em]">
+                    © 2024 Aranya Seva Biological Data Systems. All rights reserved.
+                </div>
+            </div>
+            <div class="flex flex-col md:items-end justify-between gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 md:text-right">
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="archive">Specimen Archive v2.0</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Flora Distribution Map</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Clinical Services</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Privacy & Encryption</a>
+                </div>
+                <div class="font-label text-[10px] uppercase tracking-[0.15em] text-stone-400">
+                    GPS: 12.9716° N, 77.5946° E
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Menu
@@ -338,23 +387,23 @@
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { family: "'Space Grotesk', monospace" } } }
+                    legend: { labels: { color: '#01261f', font: { family: "'Space Grotesk', monospace" } } }
                 },
                 scales: {
                     x: {
-                        grid: { color: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' },
-                        ticks: { color: 'rgba(255,255,255,0.5)' }
+                        grid: { color: 'rgba(1, 38, 31, 0.05)', borderColor: 'rgba(1, 38, 31, 0.1)' },
+                        ticks: { color: 'rgba(1, 38, 31, 0.5)' }
                     },
                     y: {
                         type: 'linear', display: true, position: 'left',
-                        grid: { color: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' },
-                        ticks: { color: 'rgba(255,255,255,0.5)' },
-                        title: { display: true, text: 'CO₂ Tons', color: 'rgba(255,255,255,0.5)' }
+                        grid: { color: 'rgba(1, 38, 31, 0.05)', borderColor: 'rgba(1, 38, 31, 0.1)' },
+                        ticks: { color: 'rgba(1, 38, 31, 0.5)' },
+                        title: { display: true, text: 'CO₂ Tons', color: 'rgba(1, 38, 31, 0.5)' }
                     },
                     y1: {
                         type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false },
-                        ticks: { color: 'rgba(255,255,255,0.5)' },
-                        title: { display: true, text: 'Value (Cr/L)', color: 'rgba(255,255,255,0.5)' }
+                        ticks: { color: 'rgba(1, 38, 31, 0.5)' },
+                        title: { display: true, text: 'Value (Cr/L)', color: 'rgba(1, 38, 31, 0.5)' }
                     }
                 }
             }
@@ -446,6 +495,18 @@
         // Initialize state visually
         document.querySelector(`.strategy-pack-btn[data-pack="${pack}"]`).style.borderColor = packs[pack].color;
         calculateImpact();
+
+        // --- Sticky Header Background ---
+        const header = document.getElementById('site-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                header.style.background = 'rgba(248, 250, 249, 0.95)';
+                header.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+            } else {
+                header.style.background = 'transparent';
+                header.style.boxShadow = 'none';
+            }
+        });
 
     </script>
 </body>
