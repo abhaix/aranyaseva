@@ -246,6 +246,58 @@
         ::-webkit-scrollbar-track { background: #f8faf9; }
         ::-webkit-scrollbar-thumb { background: #c1c8c4; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #01261f; }
+
+        /* Dropdown styling */
+        .nav-dropdown {
+            position: relative;
+            padding: 10px 0;
+        }
+        .nav-dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            min-width: 220px;
+            z-index: 60;
+        }
+        .nav-dropdown:hover .nav-dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-inner {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 12px;
+            padding: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            margin-top: 5px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1.25rem;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            letter-spacing: -0.01em;
+        }
+        .dropdown-item:hover {
+            background: rgba(1, 38, 31, 0.04);
+            color: #01261f;
+            transform: translateX(4px);
+        }
+        .dropdown-item.active {
+            color: #01261f;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -261,13 +313,46 @@
 
             <!-- Desktop nav -->
             <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight">
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="#pillars">Methodologies</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="#assessment">Our Process</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="/#tiers">Engagement Models</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="proposal">Proposals</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="estimator">Estimator</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="impact">Impact</a>
-                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="archive">Archive</a>
+                <!-- Group 1 -->
+                <div class="nav-dropdown">
+                    <button class="flex items-center gap-1.5 text-stone-500 hover:text-brand transition-colors duration-300">
+                        Our Focus <span class="material-symbols-outlined text-lg opacity-40">expand_more</span>
+                    </button>
+                    <div class="nav-dropdown-content">
+                        <div class="dropdown-inner">
+                            <a class="dropdown-item" href="#solutions">Green Solutions</a>
+                            <a class="dropdown-item" href="impact">Global Impact</a>
+                            <a class="dropdown-item" href="archive">Botanical Archive</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2 -->
+                <div class="nav-dropdown">
+                    <button class="flex items-center gap-1.5 text-stone-500 hover:text-brand transition-colors duration-300">
+                        Methodology <span class="material-symbols-outlined text-lg opacity-40">expand_more</span>
+                    </button>
+                    <div class="nav-dropdown-content">
+                        <div class="dropdown-inner">
+                            <a class="dropdown-item" href="#pillars">Core Restoration</a>
+                            <a class="dropdown-item" href="#assessment">6-Phase Process</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 3 -->
+                <div class="nav-dropdown">
+                    <button class="flex items-center gap-1.5 text-stone-500 hover:text-brand transition-colors duration-300">
+                        Engagement <span class="material-symbols-outlined text-lg opacity-40">expand_more</span>
+                    </button>
+                    <div class="nav-dropdown-content">
+                        <div class="dropdown-inner">
+                            <a class="dropdown-item" href="/#tiers">Service Models</a>
+                            <a class="dropdown-item" href="proposal">Client Proposals</a>
+                            <a class="dropdown-item" href="estimator">Plant Estimator</a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- CTA + Hamburger -->
@@ -285,14 +370,36 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu">
-        <a href="#pillars" onclick="closeMobileMenu()">Methodologies</a>
-        <a href="#assessment" onclick="closeMobileMenu()">Our Process</a>
-        <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="/#tiers">Engagement Models</a>
-        <a href="proposal" onclick="closeMobileMenu()">Proposals</a>
-        <a href="estimator" onclick="closeMobileMenu()">Estimator</a>
-        <a href="impact" onclick="closeMobileMenu()">Impact</a>
-        <a href="archive" onclick="closeMobileMenu()">Archive</a>
-        <button class="btn-primary px-10 py-3 rounded text-base mt-4" onclick="closeMobileMenu()">Consultation</button>
+        <div class="w-full px-10 space-y-8 overflow-y-auto py-10">
+            <!-- Group 1 -->
+            <div>
+                <span class="font-label text-[10px] uppercase tracking-widest text-white/30 block mb-4">Our Focus</span>
+                <div class="flex flex-col gap-3">
+                    <a href="#solutions" onclick="closeMobileMenu()">Solutions</a>
+                    <a href="impact" onclick="closeMobileMenu()">Impact</a>
+                    <a href="archive" onclick="closeMobileMenu()">Archive</a>
+                </div>
+            </div>
+            <!-- Group 2 -->
+            <div>
+                <span class="font-label text-[10px] uppercase tracking-widest text-white/30 block mb-4">Methodology</span>
+                <div class="flex flex-col gap-3">
+                    <a href="#pillars" onclick="closeMobileMenu()">Methodologies</a>
+                    <a href="#assessment" onclick="closeMobileMenu()">Our Process</a>
+                </div>
+            </div>
+            <!-- Group 3 -->
+            <div>
+                <span class="font-label text-[10px] uppercase tracking-widest text-white/30 block mb-4">Engagement</span>
+                <div class="flex flex-col gap-3">
+                    <a href="/#tiers" onclick="closeMobileMenu()">Models</a>
+                    <a href="proposal" onclick="closeMobileMenu()">Proposals</a>
+                    <a href="estimator" onclick="closeMobileMenu()">Estimator</a>
+                </div>
+            </div>
+            
+            <button class="btn-primary w-full py-4 rounded-lg text-lg mt-4" onclick="closeMobileMenu()">Consultation</button>
+        </div>
     </div>
 
     <main>
@@ -406,6 +513,132 @@
                                 <div class="mt-4 h-1 w-full bg-stone-100 rounded-full overflow-hidden"><div class="h-full bg-brand rounded-full" style="width:80%"></div></div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SOLUTIONS / APPLICATIONS SECTION ====== -->
+        <section class="py-20 sm:py-28 lg:py-40 px-6 sm:px-10 lg:px-16 bg-brand-surface" id="solutions">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="text-center mb-16 sm:mb-24 reveal">
+                    <span class="font-label text-[10px] uppercase tracking-[0.5em] text-brand/50 block mb-5">Diverse Applications</span>
+                    <h2 class="font-headline text-3xl sm:text-5xl md:text-6xl font-bold text-brand mb-6 tracking-tight">Green Solutions for Every Space</h2>
+                    <p class="font-body text-stone-500 max-w-2xl mx-auto font-light text-sm sm:text-lg lg:text-xl leading-relaxed">
+                        From your balcony to your boardroom — we make every corner flourish.
+                    </p>
+                    <div class="w-12 sm:w-16 h-px bg-brand/20 mx-auto mt-10"></div>
+                </div>
+
+                <!-- Solutions Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+                    <!-- Solution 1: Balcony Gardens -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">home_pin</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Residential</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Balcony Gardens</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Transform your residential balcony into a private paradise. Custom planters, climbing vines, herb walls — we design for your space and lifestyle.
+                        </p>
+                    </div>
+
+                    <!-- Solution 2: Rooftop Plantation -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">domain</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Commercial</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Rooftop Plantation</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Convert unused rooftops into lush retreats. Lightweight planters, insulating green roofs, and social garden spaces that add value to your property.
+                        </p>
+                    </div>
+
+                    <!-- Solution 3: Office Indoor & Outdoor -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">corporate_fare</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Corporate</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Office Indoor & Outdoor</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Boost employee wellbeing with biophilic design. We offer plant rotation services so your workspace stays fresh, healthy, and vibrant year-round.
+                        </p>
+                    </div>
+
+                    <!-- Solution 4: School & College Programs -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">school</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Education</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">School & College Programs</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Educate and inspire future stewards of the earth. Our school plantation programs blend curriculum with hands-on nature learning.
+                        </p>
+                    </div>
+
+                    <!-- Solution 5: Lawn Design & Development -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">grass</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Landscaping</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Lawn Design & Development</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            From bare soil to beautiful green lawns. We handle grading, seeding, irrigation, and ongoing care to give you the perfect outdoor space.
+                        </p>
+                    </div>
+
+                    <!-- Solution 6: Farmhouse Greenery -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">home_work</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Estate</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Farmhouse Greenery</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Large-scale landscape setup for farmhouses and estates — ornamental gardens, tree avenues, water features, and natural boundary planting.
+                        </p>
+                    </div>
+
+                    <!-- Solution 7: Complete Farming Setup -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">agriculture</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Agriculture</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Complete Farming Setup</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            End-to-end farm development — soil testing, crop selection, drip irrigation, and sustainable farming practices tailored to your land.
+                        </p>
+                    </div>
+
+                    <!-- Solution 8: Mini Fruit Trees -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">nutrition</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Urban Farming</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Mini Fruit Trees</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Grow your own fruit in the city! Dwarf mango, guava, lemon, and more — perfect for terraces, balconies, and compact urban gardens.
+                        </p>
+                    </div>
+
+                    <!-- Solution 9: Endangered Species Care -->
+                    <div class="reveal bg-white p-8 sm:p-10 border border-stone-100 rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 group">
+                        <div class="w-14 h-14 bg-brand-surface rounded-lg flex items-center justify-center mb-8 border border-stone-100 group-hover:bg-brand group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-3xl">eco</span>
+                        </div>
+                        <span class="font-label text-[9px] uppercase tracking-widest text-brand/40 block mb-3 font-bold">Conservation</span>
+                        <h3 class="font-headline text-xl font-bold text-brand mb-4">Endangered Species Care</h3>
+                        <p class="font-body text-stone-500 text-sm leading-relaxed mb-6">
+                            Join our conservation mission. We propagate and place rare and endangered plant species in safe urban environments, one garden at a time.
+                        </p>
                     </div>
                 </div>
             </div>
