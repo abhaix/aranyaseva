@@ -453,6 +453,23 @@
                         </div>
                     </div>
 
+                    <!-- Specialized Application -->
+                    <div class="mb-8">
+                        <label class="font-label text-[10px] uppercase tracking-widest text-stone-400 mb-3 block">Specialized Application</label>
+                        <div class="chip-group" data-filter="application">
+                            <button class="chip-btn selected" data-value="">All Applications</button>
+                            <button class="chip-btn" data-value="balcony">Balcony Gardens</button>
+                            <button class="chip-btn" data-value="rooftop">Rooftop Plantation</button>
+                            <button class="chip-btn" data-value="office">Office Indoor & Outdoor</button>
+                            <button class="chip-btn" data-value="school">School & College</button>
+                            <button class="chip-btn" data-value="lawn">Lawn Design</button>
+                            <button class="chip-btn" data-value="farmhouse">Farmhouse Greenery</button>
+                            <button class="chip-btn" data-value="agriculture">Complete Farming</button>
+                            <button class="chip-btn" data-value="urban_farming">Mini Fruit Trees</button>
+                            <button class="chip-btn" data-value="conservation">Endangered Species</button>
+                        </div>
+                    </div>
+
                     <!-- Primary Purpose & Search -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
@@ -726,6 +743,19 @@
             sunlight: [],
             type: [],
             usecase: [],
+            application: [],
+        };
+
+        const applicationKeywords = {
+            balcony: ["balcony", "pot", "container", "small space", "compact", "apartment", "veranda", "balconies"],
+            rooftop: ["rooftop", "terrace", "roof", "container", "exposure", "sun-loving", "planter", "rooftops"],
+            office: ["office", "indoor", "lobby", "reception", "desk", "shade tolerant", "biophilic", "cabin", "workplace"],
+            school: ["school", "education", "college", "learning", "campus", "curriculum", "student", "educational"],
+            lawn: ["lawn", "grass", "ground cover", "turf", "mowing", "soft", "play", "lawns"],
+            farmhouse: ["farmhouse", "estate", "ornamental", "avenue", "driveway", "poolside", "luxury", "landscape"],
+            agriculture: ["farming", "crop", "yield", "revenue", "agriculture", "orchard", "plantation", "agro-forestry", "farm"],
+            urban_farming: ["mini", "dwarf", "fruit", "urban farm", "kitchen garden", "terrace garden", "home grown", "urban farming"],
+            conservation: ["endangered", "rare", "threatened", "extinction", "native", "conservation", "wildlife", "protected"]
         };
         const filterSearch = document.getElementById('filter-search');
 
@@ -830,6 +860,7 @@
             const sunlights = activeFilters.sunlight;
             const types = activeFilters.type;
             const usecases = activeFilters.usecase;
+            const applications = activeFilters.application;
             const search = filterSearch.value.trim().toLowerCase();
 
             filteredPlants = allPlants.filter(p => {
@@ -838,6 +869,16 @@
                 if (sunlights.length > 0 && !sunlights.includes(p.sunlight)) return false;
                 if (types.length > 0 && !types.includes(p.plantType)) return false;
                 if (usecases.length > 0 && !usecases.includes(p.useCases)) return false;
+                
+                if (applications.length > 0) {
+                    const hay = (p.name + ' ' + p.useCases + ' ' + p.benefits + ' ' + p.description).toLowerCase();
+                    const match = applications.some(app => {
+                        const keywords = applicationKeywords[app] || [];
+                        return keywords.some(k => hay.includes(k));
+                    });
+                    if (!match) return false;
+                }
+
                 if (search) {
                     const hay = (p.name + ' ' + p.scientific + ' ' + p.otherNames + ' ' + p.family).toLowerCase();
                     if (!hay.includes(search)) return false;
@@ -1139,6 +1180,7 @@
             activeFilters.sunlight = [];
             activeFilters.type = [];
             activeFilters.usecase = [];
+            activeFilters.application = [];
             filterSearch.value = '';
             applyFilters();
         });
