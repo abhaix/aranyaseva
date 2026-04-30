@@ -307,59 +307,21 @@
     <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-500">
         <nav class="flex justify-between items-center px-6 sm:px-10 lg:px-16 py-5 max-w-[1440px] mx-auto">
             <!-- Logo -->
-            <a href="/" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative">
+            <a href="index.html" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-brand z-[110] relative">
                 ARANYA SEVA
             </a>
 
             <!-- Desktop nav -->
-            <div class="hidden lg:flex items-center gap-10 font-headline text-base tracking-tight">
-                <!-- Group 1 -->
-                <div class="nav-dropdown">
-                    <button class="flex items-center gap-1.5 text-stone-500 hover:text-brand transition-colors duration-300">
-                        Our Focus <span class="material-symbols-outlined text-lg opacity-40">expand_more</span>
-                    </button>
-                    <div class="nav-dropdown-content">
-                        <div class="dropdown-inner">
-                            <a class="dropdown-item" href="#solutions">Green Solutions</a>
-                            <a class="dropdown-item" href="impact">Global Impact</a>
-                            <a class="dropdown-item" href="archive">Botanical Archive</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Group 2 -->
-                <div class="nav-dropdown">
-                    <button class="flex items-center gap-1.5 text-stone-500 hover:text-brand transition-colors duration-300">
-                        Methodology <span class="material-symbols-outlined text-lg opacity-40">expand_more</span>
-                    </button>
-                    <div class="nav-dropdown-content">
-                        <div class="dropdown-inner">
-                            <a class="dropdown-item" href="#pillars">Core Restoration</a>
-                            <a class="dropdown-item" href="#assessment">6-Phase Process</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Group 3 -->
-                <div class="nav-dropdown">
-                    <button class="flex items-center gap-1.5 text-stone-500 hover:text-brand transition-colors duration-300">
-                        Engagement <span class="material-symbols-outlined text-lg opacity-40">expand_more</span>
-                    </button>
-                    <div class="nav-dropdown-content">
-                        <div class="dropdown-inner">
-                            <a class="dropdown-item" href="/#tiers">Service Models</a>
-                            <a class="dropdown-item" href="proposal">Client Proposals</a>
-                            <a class="dropdown-item" href="estimator">Plant Estimator</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="hidden lg:flex items-center gap-8 font-headline text-base tracking-tight">
+                <a class="text-brand border-b-2 border-brand pb-0.5" href="index.html">Home</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="proposal.html">Proposals</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="estimator.html">Estimator</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="impact.html">Impact</a>
+                <a class="text-stone-500 hover:text-brand transition-colors duration-300" href="archive.html">Archive</a>
             </div>
 
-            <!-- CTA + Hamburger -->
+            <!-- Hamburger -->
             <div class="flex items-center gap-4">
-                <button class="btn-primary hidden sm:block px-7 py-2.5 rounded text-sm tracking-wide">
-                    Consultation
-                </button>
                 <div class="hamburger lg:hidden" id="hamburger-btn" aria-label="Open menu">
                     <span></span><span></span><span></span>
                 </div>
@@ -370,35 +332,12 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu">
-        <div class="w-full px-10 space-y-8 overflow-y-auto py-10">
-            <!-- Group 1 -->
-            <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-white/30 block mb-4">Our Focus</span>
-                <div class="flex flex-col gap-3">
-                    <a href="#solutions" onclick="closeMobileMenu()">Solutions</a>
-                    <a href="impact" onclick="closeMobileMenu()">Impact</a>
-                    <a href="archive" onclick="closeMobileMenu()">Archive</a>
-                </div>
-            </div>
-            <!-- Group 2 -->
-            <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-white/30 block mb-4">Methodology</span>
-                <div class="flex flex-col gap-3">
-                    <a href="#pillars" onclick="closeMobileMenu()">Methodologies</a>
-                    <a href="#assessment" onclick="closeMobileMenu()">Our Process</a>
-                </div>
-            </div>
-            <!-- Group 3 -->
-            <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-white/30 block mb-4">Engagement</span>
-                <div class="flex flex-col gap-3">
-                    <a href="/#tiers" onclick="closeMobileMenu()">Models</a>
-                    <a href="proposal" onclick="closeMobileMenu()">Proposals</a>
-                    <a href="estimator" onclick="closeMobileMenu()">Estimator</a>
-                </div>
-            </div>
-            
-            <button class="btn-primary w-full py-4 rounded-lg text-lg mt-4" onclick="closeMobileMenu()">Consultation</button>
+        <div class="w-full px-10 space-y-4 overflow-y-auto py-10">
+            <a href="index.html" onclick="closeMobileMenu()">Home</a>
+            <a href="proposal.html" onclick="closeMobileMenu()">Proposals</a>
+            <a href="estimator.html" onclick="closeMobileMenu()">Estimator</a>
+            <a href="impact.html" onclick="closeMobileMenu()">Impact</a>
+            <a href="archive.html" onclick="closeMobileMenu()">Archive</a>
         </div>
     </div>
 
@@ -419,42 +358,45 @@
             <div class="relative z-10 max-w-6xl mx-auto w-full px-6 sm:px-10 lg:px-16 py-32 sm:py-40 flex flex-col items-center text-center">
                 <!-- Specimen label -->
                 <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 animate-fade-in">
-                    <span class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/60">Project Focus: Sustainable Yields</span>
+                    <span class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/60">For Landowners, Institutions & Estates</span>
                     <span class="w-6 sm:w-8 h-px bg-accent/40 hidden sm:block"></span>
-                    <span class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/60">Science-Driven Optimization</span>
+                    <span class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/60">Planning, Plantation & Long-Term Value</span>
                 </div>
 
                 <!-- Headline -->
                 <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-6 sm:mb-10 leading-[1.05] sm:leading-[0.95] tracking-tight animate-fade-up">
-                    Unlock the True Potential <br/>
-                    <span class="italic font-normal text-accent">of Your Land</span>.
+                    Turn Land Into a <br/>
+                    <span class="italic font-normal text-accent">High-Value Living Asset</span>.
                 </h1>
 
                 <!-- Subtext -->
-                <p class="font-body text-base sm:text-lg md:text-xl text-stone-300 mb-10 sm:mb-14 max-w-2xl leading-relaxed font-light animate-fade-up delay-200">
-                    Science-backed, end-to-end plantation solutions integrating botanical data and advanced multi-crop methodologies for sustainable land development.
+                <p class="font-body text-base sm:text-lg md:text-xl text-stone-300 mb-10 sm:mb-14 max-w-3xl leading-relaxed font-light animate-fade-up delay-200">
+                    Aranya Seva designs and builds science-backed plantation systems for farms, estates, campuses, and development land. We help you improve soil health, diversify revenue, and create long-term ecological and commercial value.
+                </p>
+                <p class="font-label text-[10px] sm:text-xs uppercase tracking-[0.25em] text-white/55 mb-8 sm:mb-10 animate-fade-up delay-200">
+                    Start with land assessment, species planning, and a clear implementation roadmap.
                 </p>
 
                 <!-- CTAs -->
                 <div class="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
-                    <button class="btn-primary px-8 sm:px-12 py-4 sm:py-5 rounded text-base sm:text-lg">
-                        Initiate Consultation
-                    </button>
-                    <button class="btn-outline px-8 sm:px-12 py-4 sm:py-5 rounded text-base sm:text-lg">
-                        Our Services
-                    </button>
+                    <a class="btn-primary px-8 sm:px-12 py-4 sm:py-5 rounded text-base sm:text-lg inline-flex items-center justify-center no-underline" href="proposal.html">
+                        View Proposal
+                    </a>
+                    <a class="btn-outline px-8 sm:px-12 py-4 sm:py-5 rounded text-base sm:text-lg inline-flex items-center justify-center no-underline" href="estimator.html">
+                        Explore Estimator
+                    </a>
                 </div>
             </div>
 
             <!-- Floating data: left -->
             <div class="absolute bottom-8 sm:bottom-12 left-6 sm:left-12 hidden md:block border-l border-white/20 pl-5 py-2 animate-fade-in delay-500">
-                <p class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-1">Crop Survival Rate</p>
+                <p class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-1">Plant Survival Target</p>
                 <p class="text-white font-label text-lg">95%+ <span class="text-[10px] opacity-40 ml-1">AVG</span></p>
             </div>
             <!-- Floating data: right -->
             <div class="absolute bottom-8 sm:bottom-12 right-6 sm:right-12 hidden md:block text-right border-r border-white/20 pr-5 py-2 animate-fade-in delay-500">
-                <p class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-1">Per-Acre Yield</p>
-                <p class="text-white font-label text-lg">+30-40% <span class="text-[10px] opacity-40 ml-1">LIFT</span></p>
+                <p class="font-label text-[10px] uppercase tracking-widest text-white/40 mb-1">Land Value Upside</p>
+                <p class="text-white font-label text-lg">+30-40% <span class="text-[10px] opacity-40 ml-1">POTENTIAL</span></p>
             </div>
         </section>
 
@@ -464,8 +406,8 @@
                 <!-- Header -->
                 <div class="reveal mb-16 sm:mb-24 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-stone-100 pb-10 sm:pb-12">
                     <div class="max-w-xl">
-                        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-brand/40 block mb-3">Traditional Farming vs. The Aranya Approach</span>
-                        <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-brand tracking-tight">Agricultural Performance Models</h2>
+                        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-brand/40 block mb-3">Why Landowners Shift To Aranya Seva</span>
+                        <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-brand tracking-tight">From Single-Crop Risk to Regenerative Asset Building</h2>
                     </div>
                     <div class="font-label text-[10px] uppercase tracking-widest text-stone-400">
                         Source: Aranya Seva Internal Data
@@ -523,10 +465,10 @@
             <div class="max-w-7xl mx-auto">
                 <!-- Header -->
                 <div class="text-center mb-16 sm:mb-24 reveal">
-                    <span class="font-label text-[10px] uppercase tracking-[0.5em] text-brand/50 block mb-5">Diverse Applications</span>
-                    <h2 class="font-headline text-3xl sm:text-5xl md:text-6xl font-bold text-brand mb-6 tracking-tight">Green Solutions for Every Space</h2>
+                    <span class="font-label text-[10px] uppercase tracking-[0.5em] text-brand/50 block mb-5">Where We Work</span>
+                    <h2 class="font-headline text-3xl sm:text-5xl md:text-6xl font-bold text-brand mb-6 tracking-tight">Plantation Systems for Land, Estates, Campuses & Built Spaces</h2>
                     <p class="font-body text-stone-500 max-w-2xl mx-auto font-light text-sm sm:text-lg lg:text-xl leading-relaxed">
-                        From your balcony to your boardroom â€” we make every corner flourish.
+                        From private land and farmhouses to institutions and compact urban projects, we adapt the same ecological planning approach to the scale and purpose of your site.
                     </p>
                     <div class="w-12 sm:w-16 h-px bg-brand/20 mx-auto mt-10"></div>
                 </div>
@@ -907,18 +849,18 @@
                     </p>
                 </div>
                 <div class="font-label text-brand text-[10px] uppercase tracking-[0.15em]">
-                    Â© 2024 Aranya Seva Biological Data Systems. All rights reserved.
+                    © 2024 Aranya Seva Biological Data Systems. All rights reserved.
                 </div>
             </div>
             <div class="flex flex-col md:items-end justify-between gap-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 md:text-right">
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Specimen Archive v2.0</a>
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Flora Distribution Map</a>
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Clinical Services</a>
-                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="#">Privacy & Encryption</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="archive.html">Specimen Archive</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="impact.html">Impact Dashboard</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="proposal.html">Proposal Overview</a>
+                    <a class="text-stone-500 hover:text-brand transition-colors font-label text-[10px] uppercase tracking-[0.15em]" href="estimator.html">Plant Estimator</a>
                 </div>
                 <div class="font-label text-[10px] uppercase tracking-[0.15em] text-stone-400">
-                    GPS: 12.9716Â° N, 77.5946Â° E
+                    GPS: 12.9716° N, 77.5946° E
                 </div>
             </div>
         </div>
@@ -968,3 +910,4 @@
     </script>
 </body>
 </html>
+
